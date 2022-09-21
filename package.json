@@ -1,0 +1,24 @@
+{
+  "name": "salud",
+  "version": "1.0.0",
+  "description": "software de control de atenciones en salud ",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [
+    "electron",
+    "node",
+    "javascrip",
+    "mysql",
+    "boostrap"
+  ],
+  "author": "Rafael Jose Huertas Ruiz",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.2",
+    "electron": "^20.1.4",
+    "electron-reload": "^2.0.0-alpha.1",
+    "mssql": "^9.0.1"
+  }
+}
