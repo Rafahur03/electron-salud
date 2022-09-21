@@ -7,7 +7,13 @@ const user = document.querySelector('#user')
 const password = document.querySelector('#password')
 const divform = document.querySelector('.form')
 
-window.addEventListener('DOMContentLoaded', e => localStorage.removeItem('userData'))
+window.addEventListener('DOMContentLoaded', e => {
+    localStorage.removeItem('userData')
+    user.value=1102849823
+    password.value=123456
+})  
+
+
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();

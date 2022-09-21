@@ -23,15 +23,16 @@ app.on('window-all-closed', () => {
 
 
 ipcMain.on('userData',(e,userData)=>{
-    main = createWindow(width,height,'', 'src/view/inicio.html', true, false);
+    main = createWindow(width,height,'Menu', 'src/view/inicio.html', true, false);
     main.show();
     login.close();
     main.webContents.send('userData',userData)
 })
 
 ipcMain.on('openMenu',(e,openMenu)=>{
-    const h =height * .8
-    const w =width * .8
+    const h =height * .9
+    const w =width * .9
+ 
 
     if(openMenu==='ventanaAdministracion'){
         const ventanaAdministracion = createWindow(w, h, 'Administracion', 'src/view/administracion.html', false, false);
@@ -39,7 +40,27 @@ ipcMain.on('openMenu',(e,openMenu)=>{
     }
 
     if(openMenu==='ventanaActivos'){
-        const ventanaAdministracion = createWindow(w, h, 'activos', 'src/view/activos.html', false, false);
-        ventanaAdministracion.show();
+        const ventanaActivos = createWindow(w, h, 'activos', 'src/view/activos.html', false, false);
+        ventanaActivos.show();
+    }
+
+    if(openMenu==='ventanaSolicitud'){
+        const ventanaSolicitud = createWindow(w, h, 'activos', 'src/view/solicitudes.html', false, false);
+        ventanaSolicitud.show();
+    }
+
+    if(openMenu==='ventanaReporte'){
+        const ventanaReporte = createWindow(w, h, 'activos', 'src/view/reportes.html', false, false);
+        ventanaReporte.show();
+    }
+
+    if(openMenu==='ventanaEncuesta'){
+        const ventanaEncuesta = createWindow(w, h, 'activos', 'src/view/encuestas.html', false, false);
+        ventanaEncuesta.show();
+    }
+
+    if(openMenu==='ventanaEstadistica'){
+        const ventanaEstadistica = createWindow(w, h, 'activos', 'src/view/estadisticas.html', false, false);
+        ventanaEstadistica.show();
     }
 })

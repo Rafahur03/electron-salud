@@ -1,6 +1,6 @@
 const {BrowserWindow} = require('electron')
 
-const createWindow = (width, height,title , view, fullscreen, resizable) => {
+const createWindow = (width, height, title , view, fullscreen, resizable) => {
     const win = new BrowserWindow({
         width,
         height,

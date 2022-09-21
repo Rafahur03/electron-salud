@@ -1,15 +1,17 @@
 const {ipcRenderer}= require('electron')
 
 
-const menuAdministracion = document.querySelector('.administracion')
-const menuActivos = document.querySelector('.activos')
-const menuSolicitud= document.querySelector('.solicitud')
-const menuReporte = document.querySelector('.reporte')
-const menuEncuesta = document.querySelector('.encuesta')
+const menuAdministracion = document.querySelector('.administracion');
+const menuActivos = document.querySelector('.activos');
+const menuSolicitud= document.querySelector('.solicitud');
+const menuReporte = document.querySelector('.reporte');
+const menuEncuesta = document.querySelector('.encuesta');
+const menuEstadistica = document.querySelector('.estadistica');
+const usuario = document.querySelector('.usuario');
 let openMenu
 
 ipcRenderer.on('userData', (e,userData)=>{
-    document.title = `Bienvenido ${userData.nombre_1} ${userData.nombre_2} ${userData.aprellido_1} ${userData.apellido_2}`
+   usuario.textContent = `Bienvenido ${userData.nombre} ${userData.nombre_1} ${userData.apellido} ${userData.apellido_1}`
 })
 
 
@@ -20,7 +22,6 @@ menuAdministracion.addEventListener('click',()=>{
 })
 
 menuActivos.addEventListener('click', ()=> {
-    console.log('activos')
     openMenu = 'ventanaActivos'
     ipcRenderer.send('openMenu',openMenu)
 })
@@ -37,5 +38,10 @@ menuReporte.addEventListener('click', ()=> {
 
 menuEncuesta.addEventListener('click', ()=>{
     openMenu = 'ventanaEncuesta'
+    ipcRenderer.send('openMenu',openMenu)
+})
+
+menuEstadistica.addEventListener('click', ()=>{
+    openMenu = 'ventanaEstadistica'
     ipcRenderer.send('openMenu',openMenu)
 })
