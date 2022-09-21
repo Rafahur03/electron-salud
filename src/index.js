@@ -8,7 +8,7 @@ const password = document.querySelector('#password')
 const divform = document.querySelector('.form')
 
 window.addEventListener('DOMContentLoaded', e => {
-    localStorage.removeItem('userData')
+    localStorage.clear()
     user.value=1102849823
     password.value=123456
 })  

@@ -32,4 +32,11 @@ const usuario = async id =>{
     return (resultado.recordset[0])
 }
 
-module.exports={db,sql, usuario}
+const listadoActivos= async ()=>{
+  const pool = await db()
+  const resultado = await pool.query(`SELECT id, id_equipo, Nombre_activo, Marca, modelo, serie, ubicacion, responsable, estado FROM listado_activos`)
+  return (resultado.recordset)
+}
+
+
+module.exports={db,sql, usuario, listadoActivos}
