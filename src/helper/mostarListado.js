@@ -18,8 +18,8 @@ async function cargarlistado(parent){
             <td>${activo.ubicacion}</td>
             <td>${activo.responsable}</td>
             <td>${activo.estado}</td>
-            <td><button type="button" class="btn btn-warning">Editar</button></td>
-            <td><button type="button" class="btn btn-danger">Eliminar</button></td>
+            <td><button type="button" id=${activo.id} class="btn btn-warning">Editar</button></td>
+            <td><button type="button" id=${activo.id} class="btn btn-danger">Eliminar</button></td>
 
         `
 
