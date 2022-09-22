@@ -1,5 +1,5 @@
-const {app, screen, ipcMain} = require('electron')
-const {createWindow} = require('./helper/createWindow')
+const { app, screen, ipcMain } = require('electron')
+const { createWindow } = require('./helper/createWindow')
 const { default: electronReload } = require('electron-reload');
 require('dotenv').config()
 require('electron-reload')(__dirname);
@@ -10,99 +10,123 @@ let main
 let width
 let height
 
+// crea la ventana de login 
 app.whenReady().then(() => {
     width = screen.getAllDisplays()[0].size.width;
     height = screen.getAllDisplays()[0].size.height;
-    login = createWindow(width,height,'Login', 'src/index.html', false, false);
+    login = createWindow(width, height, 'Login', 'src/index.html', false, false);
     login.show();
 })
 
+// cuando no existen  ventanas cierra la app
 app.on('window-all-closed', () => {
     app.quit();
 })
 
-ipcMain.on('userData',(e,userData)=>{
-    main = createWindow(width,height,'Menu', 'src/view/inicio.html', true, false);
+// cuando se hace un inicio de sesion correcto cierra login- inicia la pantalla menu y envia los datos del use a la vista 
+ipcMain.on('userData', (e, userData) => {
+    main = createWindow(width, height, 'Menu', 'src/view/inicio.html', true, false);
     main.show();
     login.close();
-    main.webContents.send('userData',userData)
-    main.on('close', ()=>{
+    main.webContents.send('userData', userData)
+    main.on('close', () => {
         app.quit();
-    })   
+    })
 
 })
 
-ipcMain.on('openMenu',(e,openMenu)=>{
-    const h =height * .9
-    const w =width * .9
-    
-    switch (openMenu){
+
+// maneja la creacion de ventanas del menu inicio
+ipcMain.on('openMenu', (e, openMenu) => {
+    const h = height * .9
+    const w = width * .9
+
+    switch (openMenu) {
 
         case 'ventanaAdministracion':
             const ventanaAdministracion = createWindow(w, h, 'Administracion', 'src/view/administracion/administracion.html', false, false);
             ventanaAdministracion.show();
-            ventanaAdministracion.on('close', ()=>{
+            ventanaAdministracion.on('close', () => {
                 ventanaAdministracion.close();
-            })   
-        break;
+            })
+            break;
 
         case 'ventanaActivos':
             const ventanaActivos = createWindow(w, h, 'activos', 'src/view/activos/activos.html', false, false);
             ventanaActivos.show();
-            ventanaActivos.on('close', ()=>{
+            ventanaActivos.on('close', () => {
                 ventanaActivos.close();
-            }) 
-        break;
+            })
+            break;
 
         case 'ventanaSolicitud':
             const ventanaSolicitud = createWindow(w, h, 'Solictudes', 'src/view/solicitudes/solicitudes.html', false, false);
             ventanaSolicitud.show();
-            ventanaSolicitud.on('close', ()=>{
+            ventanaSolicitud.on('close', () => {
                 ventanaSolicitud.close();
-            }) 
-        break;
+            })
+            break;
 
         case 'ventanaReporte':
             const ventanaReporte = createWindow(w, h, 'Reportes', 'src/view/reportes/reportes.html', false, false);
             ventanaReporte.show();
-            ventanaReporte.on('close', ()=>{
+            ventanaReporte.on('close', () => {
                 ventanaReporte.close();
-            }) 
-         break;
+            })
+            break;
 
         case 'ventanaEncuesta':
             const ventanaEncuesta = createWindow(w, h, 'Encuestas', 'src/view/encuestas/encuestas.html', false, false);
             ventanaEncuesta.show();
-            ventanaEncuesta.on('close', ()=>{
+            ventanaEncuesta.on('close', () => {
                 ventanaEncuesta.close();
-            }) 
-        break;
+            })
+            break;
 
         case 'ventanaEstadistica':
             const ventanaEstadistica = createWindow(w, h, 'Estadisticas', 'src/view/estadisticas/estadisticas.html', false, false);
             ventanaEstadistica.show();
-            ventanaEstadistica.on('close', ()=>{
+            ventanaEstadistica.on('close', () => {
                 ventanaEstadistica.close();
-            }) 
-        break;
+            })
+            break;
 
         case 'ventanaListadoActivos':
             const ventanaListadoActivos = createWindow(width, height, 'listado de activos', 'src/view/activos/listadoActivos.html', false, false);
             ventanaListadoActivos.show();
-            ventanaListadoActivos.on('close', ()=>{
+            ventanaListadoActivos.on('close', () => {
                 ventanaListadoActivos.close();
-            }) 
-        break;
+            })
+            break;
 
         case 'ventanaIngresoActivo':
             const VentanaIngresoActivo = createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
             VentanaIngresoActivo.show();
-            VentanaIngresoActivo.on('close', ()=>{
+            VentanaIngresoActivo.on('close', () => {
                 VentanaIngresoActivo.close();
-            }) 
-        break;
+            })
+            break;
 
         default:
-        break;
+            break;
     }
+})
+
+// abre la ventana crear activo para edicion de algun activo en especial.
+ipcMain.on('activoId', (e, activoId) => {
+    const editarActivo = createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
+    editarActivo.show();
+    console.log('alla');
+    editarActivo.webContents.on('dom-ready',()=>{
+        console.log('aqui')
+        editarActivo.webContents.send('activoId', activoId)
+    })
+    
+    
+    editarActivo.on('close', () => {
+        editarActivo.close();
+    })
+
+    
+ 
 })

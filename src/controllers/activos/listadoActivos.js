@@ -3,7 +3,6 @@ const { cargarlistado } = require('../../helper/mostarListado')
 
 const tbody = document.querySelector('tbody')
 const search = document.querySelector('#inputFiltro')
-const editar = document.querySelectorAll('.btn.warning')
 let tabletr
 let v
 
@@ -29,11 +28,8 @@ tbody.addEventListener('click', e=>{
 
 tbody.addEventListener('dblclick', e =>{
    const activoId= e.path[1].id
+   console.log(activoId)
    ipcRenderer.send('activoId', activoId)
-})
-
-editar.forEach((edit)=>{
-   edit.addEventListener('click', buttonEditar)
 })
 
 search.addEventListener('keyup', e => {
