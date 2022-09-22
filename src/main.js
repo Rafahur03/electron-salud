@@ -94,8 +94,8 @@ ipcMain.on('openMenu',(e,openMenu)=>{
             }) 
         break;
 
-        case 'VentanaIngresoActivo':
-            const VentanaIngresoActivo = createWindow(w, h, 'Estadisticas', 'src/view/estadisticas/estadisticas.html', false, false);
+        case 'ventanaIngresoActivo':
+            const VentanaIngresoActivo = createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
             VentanaIngresoActivo.show();
             VentanaIngresoActivo.on('close', ()=>{
                 VentanaIngresoActivo.close();
