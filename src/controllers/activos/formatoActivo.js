@@ -1,5 +1,5 @@
 const { ipcRenderer } = require('electron')
-const { activo } = require('../../bd/bd')
+const { activo, actualizarActivo } = require('../../bd/bd')
 
 const buttonCrear = document.querySelector('.crear')
 const buttonActualizar = document.querySelector('.actualizar')
@@ -35,20 +35,41 @@ const tbody = document.querySelector('tbody')
 
 ipcRenderer.on('activoId', async (e, activoId) => {
 
-   const dataActivo = await activo(activoId)
-   idactivo.value = dataActivo.id_equipo.trim()
-   nombreActivo.value  = dataActivo.Nombre_activo.trim()
-   marcaActivo.value = dataActivo.Marca.trim()
-   modeloActivo.value = dataActivo.modelo.trim()
-   serieActivo.value = dataActivo.serie.trim()
-   ubicacionActivo.value = dataActivo.ubicacion.trim()
-   estadoActivo.value = dataActivo.estado.trim()
-   responsableActivo.value = dataActivo.responsable
-   buttonCrear.classList.add('d-none')
+    const dataActivo = await activo(activoId)
+
+    idactivo.value = dataActivo.id_equipo.trim()
+    nombreActivo.value = dataActivo.Nombre_activo.trim()
+    marcaActivo.value = dataActivo.Marca.trim()
+    modeloActivo.value = dataActivo.modelo.trim()
+    serieActivo.value = dataActivo.serie.trim()
+    ubicacionActivo.value = dataActivo.ubicacion.trim()
+    estadoActivo.value = dataActivo.estado.trim()
+    responsableActivo.value = dataActivo.responsable
+    buttonCrear.classList.add('d-none')
+
+    if (estadoActivo.value === 'Activo') {
+        estadoActivo.classList.add('text-success')
+    } else {
+        estadoActivo.classList.add('text-danger')
+    }
+
 })
 
-estadoActivo.addEventListener('change',(e)=>{
-  if(e.target.value ='Activo'){
-   console.log(estadoActivo)
-  }
+
+buttonSalir.addEventListener('click', ()=>{
+    const salir='salir'
+    ipcRenderer.send('salir', salir)
+})
+
+buttonActualizar.addEventListener('click', async ()=>{
+    const activo = {
+        id_equipo: idactivo.value,
+        nombre: nombreActivo.value
+    }
+   const resp =  await actualizarActivo(activo) 
+   if(resp===1){
+        alert('Activo actualizado exitosamente')
+   }else{
+         alert('Ha ocurido un error intenta mas tarde')
+   }
 })

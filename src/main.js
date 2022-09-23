@@ -116,9 +116,7 @@ ipcMain.on('openMenu', (e, openMenu) => {
 ipcMain.on('activoId', (e, activoId) => {
     const editarActivo = createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
     editarActivo.show();
-    console.log('alla');
     editarActivo.webContents.on('dom-ready',()=>{
-        console.log('aqui')
         editarActivo.webContents.send('activoId', activoId)
     })
     
@@ -127,6 +125,9 @@ ipcMain.on('activoId', (e, activoId) => {
         editarActivo.close();
     })
 
+    ipcMain.on('salir', (e,salir)=>{
+        editarActivo.close()
+    })
     
  
 })

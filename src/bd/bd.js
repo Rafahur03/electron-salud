@@ -44,8 +44,15 @@ const activo = async (id)=>{
   return (resultado.recordset[0])
 }
 
+const actualizarActivo = async (activo)=>{
+  const pool = await db()
+  const resultado = await pool.query(`UPDATE listado_activos SET Nombre_activo = '${activo.nombre}' WHERE id_equipo='${activo.id_equipo}'`)
+  return (resultado.rowsAffected[0])
+}
+
 module.exports={
     usuario,
     listadoActivos,
-    activo
+    activo,
+    actualizarActivo
 }
