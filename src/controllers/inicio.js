@@ -10,10 +10,10 @@ const menuEstadistica = document.querySelector('.estadistica');
 const usuario = document.querySelector('.usuario');
 let openMenu
 
-ipcRenderer.on('userData', (e,userData)=>{
+ipcRenderer.on('userData', (e, userData)=>{
    usuario.textContent = `Bienvenido ${userData.nombre} ${userData.nombre_1} ${userData.apellido} ${userData.apellido_1}`
+   
 })
-
 
 menuAdministracion.addEventListener('click',()=>{ 
     console.log('hola')

@@ -1,15 +1,19 @@
 const { ipcRenderer } = require('electron/renderer')
-const { cargarlistado } = require('../../helper/mostarListado')
+const { cargarlistado, actualizarListado } = require('../../helper/mostarListado')
 
 const tbody = document.querySelector('tbody')
 const search = document.querySelector('#inputFiltro')
-let tabletr
 let v
 
 
 document.addEventListener('DOMContentLoaded', async () => {
-   await cargarlistado(tbody)
-   tabletr = tbody.querySelectorAll('tr')
+   await cargarlistado(tbody)  
+})
+
+ipcRenderer.on('activoActualizado', (e, activo)=>{
+   const idtr =`#act${activo.id}` 
+   const tr = document.querySelector(idtr)
+   actualizarListado(tr, activo)
 })
 
 tbody.addEventListener('click', e=>{
@@ -27,13 +31,14 @@ tbody.addEventListener('click', e=>{
 })
 
 tbody.addEventListener('dblclick', e =>{
-   const activoId= e.path[1].id
-   console.log(activoId)
+   const id = e.path[1].id
+   const activoId = id.replace('act', '')
    ipcRenderer.send('activoId', activoId)
 })
 
 search.addEventListener('keyup', e => {
    const criterio = e.target.value.toLowerCase();
+   const tabletr = tbody.querySelectorAll('tr')
    tabletr.forEach(tr => {
       const tabletd = tr.querySelectorAll('td')
       v=0

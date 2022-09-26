@@ -1,5 +1,5 @@
-const { app, screen, ipcMain } = require('electron')
-const { createWindow } = require('./helper/createWindow')
+const { app, screen, ipcMain, BrowserWindow, ipcRendererInternal} = require('electron')
+const { createWindow, createWindowchild } = require('./helper/createWindow')
 const { default: electronReload } = require('electron-reload');
 require('dotenv').config()
 require('electron-reload')(__dirname);
@@ -94,16 +94,23 @@ ipcMain.on('openMenu', (e, openMenu) => {
         case 'ventanaListadoActivos':
             const ventanaListadoActivos = createWindow(width, height, 'listado de activos', 'src/view/activos/listadoActivos.html', false, false);
             ventanaListadoActivos.show();
+            ipcMain.on('activoActualizado',( e, activo)=>{
+                ventanaListadoActivos.webContents.send('activoActualizado', activo)
+            })
             ventanaListadoActivos.on('close', () => {
                 ventanaListadoActivos.close();
             })
             break;
 
         case 'ventanaIngresoActivo':
-            const VentanaIngresoActivo = createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
-            VentanaIngresoActivo.show();
-            VentanaIngresoActivo.on('close', () => {
-                VentanaIngresoActivo.close();
+            let ventanaIngresoActivo = createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
+            ventanaIngresoActivo.show();
+            ventanaIngresoActivo.webContents.on('dom-ready', ()=>{
+                const crear = 'crear'
+                ventanaIngresoActivo.webContents.send('crear', crear)
+            })
+            ventanaIngresoActivo.on('close', (e) => {
+                ventanaIngresoActivo.close();
             })
             break;
 
@@ -114,20 +121,35 @@ ipcMain.on('openMenu', (e, openMenu) => {
 
 // abre la ventana crear activo para edicion de algun activo en especial.
 ipcMain.on('activoId', (e, activoId) => {
-    const editarActivo = createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
+    
+    const editarActivo =  createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
     editarActivo.show();
     editarActivo.webContents.on('dom-ready',()=>{
         editarActivo.webContents.send('activoId', activoId)
     })
-    
-    
-    editarActivo.on('close', () => {
-        editarActivo.close();
+   
+    editarActivo.on('close', (e) => {
+       editarActivo.hide();
+       e.preventDefault();
+       return false
+       
+    })    
+ 
+    // habre ventana fija de confirmacion de eliminar activo
+    ipcMain.on('eliminarActivo', (e, activo)=>{
+        //const padre = BrowserWindow.getFocusedWindow()
+
+        const  confirmarEliminarActivo =  createWindowchild(800, 800, 'Datos activos', 'src/view/activos/confirmarEliminarActivo.html', false, false, editarActivo);
+        confirmarEliminarActivo.show();
+
+        confirmarEliminarActivo.webContents.on('dom-ready',()=>{
+            confirmarEliminarActivo.webContents.send('eliminarActivo', activo)
+        })
+        
+        ipcMain.on('confirmarEliminar', (e, activo)=>{
+            editarActivo.webContents.send('confirmarEliminar', activo)
+        
+        })  
     })
 
-    ipcMain.on('salir', (e,salir)=>{
-        editarActivo.close()
-    })
-    
- 
 })

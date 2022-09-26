@@ -7,7 +7,7 @@ async function cargarlistado(parent){
     listado.forEach(activo => {
 
         const items = document.createElement('tr')
-        items.setAttribute('id', activo.id)
+        items.id = `act${activo.id}`
         items.classList.add('text-center')
         items.innerHTML=`
             <td>${activo.id_equipo}</td>
@@ -18,15 +18,22 @@ async function cargarlistado(parent){
             <td>${activo.ubicacion}</td>
             <td>${activo.responsable}</td>
             <td>${activo.estado}</td>
-            <td><button type="button" id=${activo.id} class="btn btn-warning">Editar</button></td>
-            <td><button type="button" id=${activo.id} class="btn btn-danger">Eliminar</button></td>
-
-        `
-
-       
+        `     
         parent.appendChild(items)
 
     });
 }
 
-module.exports ={ cargarlistado }
+function actualizarListado(parent, activo){
+    parent.innerHTML=`
+        <td>${activo.id_equipo}</td>
+        <td>${activo.nombre}</td>
+        <td>${activo.marca}</td>
+        <td>${activo.modelo}</td>
+        <td>${activo.serie}</td>
+        <td>${activo.ubicacion}</td>
+        <td>${activo.responsable}</td>
+        <td>${activo.estado}</td>
+    `     
+}
+module.exports ={ cargarlistado, actualizarListado } 
