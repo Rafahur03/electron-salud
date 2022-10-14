@@ -13,66 +13,86 @@
 <body>
     <div class="container-fluid w-100 d-flex mb-3 mt-3">
         <div class="p-2"><button type="button" class="btn btn-success crear">Crear</button></div>
-        <div class="p-2"><button type="button" class="btn btn-warning actualizar">Actualizar</button></div>
-        <div class="p-2"><button type="button" class="btn btn-secondary solicitar">Solictar Mtto</button></div>
-        <div class="p-2">  <button type="button" class="btn btn-primary print">Print</button></div>      
-        <div class="p-2 ms-auto"><button type="button" class="btn btn-danger eliminar">Eliminar</button></div>
+        <div class="p-2"><button type="button" class="btn btn-warning actualizar d-none">Actualizar</button></div>
+        <div class="p-2"><button type="button" class="btn btn-secondary solicitar d-none">Solictar Mtto</button></div>
+        <div class="p-2"> <button type="button" class="btn btn-primary print d-none">Print</button></div>
+        <div class="p-2 ms-auto"><button type="button" class="btn btn-danger eliminar d-none">Eliminar</button></div>
     </div>
-    <div class="container-fluid w-100 m-0 p-0 mb-3">
+
+    <div class="container-fluid w-100 m-0 p-0 mb-3 dataActivo">
         <form class="w-100">
             <div class="row mx-3 align-items-center">
                 <div class="form-group col-4 p-4">
                     <img class="img-fluid"
                         src="https://www.lenovo.com/medias/IdeaPad-3-14ITL6-CT1-01-1060x596px.png?context=bWFzdGVyfHJvb3R8MzU3OTAxfGltYWdlL3BuZ3xoZGEvaGJiLzE0Nzg3OTEyMjY5ODU0LnBuZ3xlMGUyY2EzYzc3YjFmZGU5NjlhNTU5ZGFlZGEzYzk1ZjY5ODg3MjY5YjY4YThiZmNiMzJmZWQwMjAwOTAzY2Nl"
                         alt="">
+                </div>
+                <div class="form-group col-3">
+                    <label for="clasificacionActivo" class="clasificacionActivo">Clasificacion Activo</label>
+                    <input type="select" class="form-control my-1  fw-bold" id="clasificacionActivo"
+                        list="listClasificacionActivo">
+                    <datalist id="listClasificacionActivo"></datalist>
                     
-                </div>
-                <div class="form-group col-3">
-                    <label for="codigoInterno">Codigo Interno</label>
-                    <input type="text" class="form-control my-1 fw-bold" id="codigoInterno" readonly>
+                    <label for="codigoInterno" class="d-none codigoInterno">Codigo Interno</label>
+                    <input type="text" class="form-control my-1 fw-bold d-none" id="codigoInterno" readonly>
 
-                    <label for="nombreActivo">Nombre</label>
-                    <input type="text" class="form-control my-1" id="nombreActivo">
-
-                    <label for="marcaActivo">Marca</label>
-                    <input type="text" class="form-control my-1" id="marcaActivo">
-                   
-                </div>
-                <div class="form-group col-3">
                     <label for="modeloActivo">Modelo</label>
                     <input type="text" class="form-control my-1" id="modeloActivo">
+
+                    <label for="areaActivo">Area</label>
+                    <input type="text" class="form-control my-1" id="areaActivo" list="listaAreas">
+                    <datalist id="listaAreas"></datalist>
+
+                </div>
+                <div class="form-group col-3">
+                    <label for="nombreActivo">Nombre</label>
+                    <input type="text" class="form-control my-1" id="nombreActivo">
 
                     <label for="serieActivo">Serie</label>
                     <input type="text" class="form-control my-1" id="serieActivo">
 
-                    <label for="procesoActivo">Proceso</label>
-                    <input type="text" class="form-control my-1" id="procesoActivo">
-
-                    
-                </div>
-                <div class="form-group col-2">
-
-                    <label for="areaActivo">Area</label>
-                    <input type="text" class="form-control my-1" id="areaActivo">
-                    
                     <label for="ubicacionActivo">Ubicacion Especifica</label>
                     <input type="text" class="form-control my-1" id="ubicacionActivo">
 
-                    <label for="estadoActivo">Estado</label>
-                    <input type="text" class="form-control my-1 fw-bold" id="estadoActivo">
+                </div>
+                <div class="form-group col-2">
+                    <label for="marcaActivo">Marca</label>
+                    <input type="text" class="form-control my-1" id="marcaActivo" list="listMarcas">
+                    <datalist id="listMarcas"></datalist>
 
+                    <label for="procesoActivo">Proceso</label>
+                    <input type="text" class="form-control my-1" id="procesoActivo" list="listProceso">
+                    <datalist id="listProceso"></datalist>
+
+                    <label for="estadoActivo">Estado</label>
+                    <input type="text" class="form-control my-1 fw-bold" id="estadoActivo" list="listaEstado">
+                    <datalist id="listaEstado"></datalist>
                 </div>
             </div>
-
-            <div class="row mx-3 align-items-center">
-                <div class="form-group col-2">
+            <div class="row mx-3 align-items-center py-1">
+                <div class="form-group col-5">
                     <label for="proveedorActivo">Provedor</label>
-                    <input type="text" class="form-control my-1" id="proveedorActivo">
+                    <input type="text" class="form-control my-1" id="proveedorActivo" list="listaProveedores">
+                    <datalist id="listaProveedores"></datalist>                    
+                </div>
+                <div class="form-group col-2 nitProveedor">
+                    <label for="nitProveedor">Nit Provedor</label>
+                    <input type="text" class="form-control my-1" id="nitProveedor" readonly>
+                </div>
+    
+                <div class="form-group col-3">
+                    <label for="responsableActivo">Responsable del Activo</label>
+                    <input type="text" class="form-control my-1" id="responsableActivo" list="listaUsuario">
+                    <datalist id="listaUsuario"></datalist>
                 </div>
                 <div class="form-group col-2">
-                    <label for="nitProveedor">Nit Provedor</label>
-                    <input type="text" class="form-control my-1" id="nitProveedor">
+                    <label for="tipoActivo">Tipo activo</label>
+                    <input type="text" class="form-control my-1" id="tipoActivo" list="listaTipoActivo">
+                    <datalist id="listaTipoActivo"></datalist>
                 </div>
+
+            </div>
+            <div class="row mx-3 align-items-center py-1">
                 <div class="form-group col-2">
                     <label for="facturaActivo">N. Factura</label>
                     <input type="text" class="form-control my-1" id="facturaActivo">
@@ -81,44 +101,35 @@
                     <label for="valorActivo">valor</label>
                     <input type="text" class="form-control my-1" id="valorActivo">
                 </div>
-                <div class="form-group col-2">
-                    <label for="responsableActivo">Responsable del Activo</label>
-                    <input type="text" class="form-control my-1" id="responsableActivo">
-                </div>
-                <div class="form-group col-2">
-                    <label for="tipoActivo">Tipo activo</label>
-                    <input type="text" class="form-control my-1" id="tipoActivo">
-                </div>
-                
-            </div>
-            <div class="row mx-3 align-items-center">
-                <div class="form-group col-2">
+
+                <div class="form-group col-2 d-none ingresoActivo">
                     <label for="ingresoActivo">Fecha ingreso al Inv</label>
-                    <input type="text" class="form-control my-1" id="ingresoActivo">
+                    <input type="date" class="form-control my-1" id="ingresoActivo" readonly>
                 </div>
-                <div class="form-group col-2">
+                <div class="form-group col-3">
                     <label for="fechaCompra">Fecha Compra</label>
-                 <input type="text" class="form-control my-1" id="fechaCompra">
+                    <input type="date" class="form-control my-1" id="fechaCompra">
                 </div>
-                <div class="form-group col-2">
+                <div class="form-group col-3">
                     <label for="garantiaActivo">Fin Garantia</label>
-                    <input type="text" class="form-control my-1" id="garantiaActivo">
+                    <input type="date" class="form-control my-1" id="garantiaActivo">
                 </div>
                 <div class="form-group col-2">
                     <label for="frecuenciaMtto">Frecuencia de Mtto</label>
-                    <input type="text" class="form-control my-1" id="frecuenciaMtto">
+                    <input type="text" class="form-control my-1" id="frecuenciaMtto" list="listaFrecuencia">
+                    <datalist id="listaFrecuencia"></datalist>
                 </div>
-                <div class="form-group col-2">
+                <div class="form-group col-2 d-none ultimoMtto ">
                     <label for="ultimoMtto">Fecha Ultimo Mtto</label>
-                    <input type="text" class="form-control my-1" id="ultimoMtto">
+                    <input type="date" class="form-control my-1" id="ultimoMtto" readonly>
                 </div>
-                <div class="form-group col-2">
+                <div class="form-group col-2 d-none proximoMtto">
                     <label for="proximoMtto">Fecha Proximo Mtto</label>
-                    <input type="text" class="form-control my-1 fw-bold" id="proximoMtto">
+                    <input type="date" class="form-control my-1 fw-bold" id="proximoMtto" readonly>
                 </div>
-                
+
             </div>
-            <div class="row mx-3 align-items-center">
+            <div class="row mx-3 align-items-center py-1">
                 <div class="form-group col-4">
                     <label for="descripcionActivo">Descripcion del Activo</label>
                     <textarea class="form-control m-1" id="descripcionActivo" rows="4"></textarea>
@@ -131,10 +142,10 @@
                     <label for="observacionActivo">Observaciones</label>
                     <textarea class="form-control m-1" id="observacionActivo" rows="4"></textarea>
                 </div>
-            </div>           
+            </div>
         </form>
     </div>
-    <div class="container-fluid w-100 m-0 p-0 my-3">
+    <div class="container-fluid w-100 m-0 p-0 my-3 d-none historialMantenimiento">
         <h2 class="text-center fw-bold">Historial de Mantenimientos</h2>
         <table class="table W-100 table-striped table-hover table-sm table-responsive">
             <thead>
@@ -145,8 +156,8 @@
                     <th scope="col">Reporte tecnico</th>
                     <th scope="col">recomendaciones</th>
                     <th scope="col">Proveedor</th>
-                    <th scope="col">Proximo Mtto</th>      
-                    <th scope="col">Tipo Mtto</th>                
+                    <th scope="col">Proximo Mtto</th>
+                    <th scope="col">Tipo Mtto</th>
                 </tr>
             </thead>
             <tbody>

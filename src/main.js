@@ -4,6 +4,7 @@ const { default: electronReload } = require('electron-reload');
 require('dotenv').config()
 require('electron-reload')(__dirname);
 
+const window = new Map()
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 let login
 let main
@@ -25,10 +26,14 @@ app.on('window-all-closed', () => {
 
 // cuando se hace un inicio de sesion correcto cierra login- inicia la pantalla menu y envia los datos del use a la vista 
 ipcMain.on('userData', (e, userData) => {
-    main = createWindow(width, height, 'Menu', 'src/view/inicio.html', true, false);
+    main = createWindow(width, height, 'Menu', 'src/view/inicio.html', false, false);
     main.show();
-    login.close();
-    main.webContents.send('userData', userData)
+    login.close()
+    
+    main.webContents.on('dom-ready', ()=>{
+        main.webContents.send('userData', userData)
+    })
+
     main.on('close', () => {
         app.quit();
     })
@@ -36,7 +41,7 @@ ipcMain.on('userData', (e, userData) => {
 })
 
 
-// maneja la creacion de ventanas del menu inicio
+//////////////// maneja la creacion de ventanas del menu inicio/////////////////////////////////
 ipcMain.on('openMenu', (e, openMenu) => {
     const h = height * .9
     const w = width * .9
@@ -44,23 +49,39 @@ ipcMain.on('openMenu', (e, openMenu) => {
     switch (openMenu) {
 
         case 'ventanaAdministracion':
-            const ventanaAdministracion = createWindow(w, h, 'Administracion', 'src/view/administracion/administracion.html', false, false);
+            let  ventanaAdministracion
+            if(!window.has(ventanaAdministracion)){
+                ventanaAdministracion = createWindow(w, h, 'Administracion', 'src/view/administracion/administracion.html', false, false);
+                window.set('ventanaAdministracion' ,ventanaAdministracion)
+            }
             ventanaAdministracion.show();
+           
             ventanaAdministracion.on('close', () => {
                 ventanaAdministracion.close();
             })
             break;
 
         case 'ventanaActivos':
-            const ventanaActivos = createWindow(w, h, 'activos', 'src/view/activos/activos.html', false, false);
+            let  ventanaActivos
+            if(!window.has(ventanaActivos)){
+                ventanaActivos = createWindow(w, h, 'activos', 'src/view/activos/activos.html', false, false)
+                window.set('ventanaActivos' ,ventanaActivos)
+            }
+            
             ventanaActivos.show();
             ventanaActivos.on('close', () => {
-                ventanaActivos.close();
+                e.preventDefault();
+                ventanaActivos.hide();
             })
             break;
 
         case 'ventanaSolicitud':
-            const ventanaSolicitud = createWindow(w, h, 'Solictudes', 'src/view/solicitudes/solicitudes.html', false, false);
+            let ventanaSolicitud
+            if(!window.has(ventanaSolicitud)){
+                ventanaSolicitud = createWindow(w, h, 'Solictudes', 'src/view/solicitudesMtto/solicitudes.html', false, false);
+                window.set('ventanaSolicitud' ,ventanaSolicitud)
+            }  
+            
             ventanaSolicitud.show();
             ventanaSolicitud.on('close', () => {
                 ventanaSolicitud.close();
@@ -69,6 +90,7 @@ ipcMain.on('openMenu', (e, openMenu) => {
 
         case 'ventanaReporte':
             const ventanaReporte = createWindow(w, h, 'Reportes', 'src/view/reportes/reportes.html', false, false);
+            window.add(ventanaAdmventanaReporteinistracion)
             ventanaReporte.show();
             ventanaReporte.on('close', () => {
                 ventanaReporte.close();
@@ -77,6 +99,7 @@ ipcMain.on('openMenu', (e, openMenu) => {
 
         case 'ventanaEncuesta':
             const ventanaEncuesta = createWindow(w, h, 'Encuestas', 'src/view/encuestas/encuestas.html', false, false);
+            window.add(ventanaEncuesta)
             ventanaEncuesta.show();
             ventanaEncuesta.on('close', () => {
                 ventanaEncuesta.close();
@@ -85,6 +108,7 @@ ipcMain.on('openMenu', (e, openMenu) => {
 
         case 'ventanaEstadistica':
             const ventanaEstadistica = createWindow(w, h, 'Estadisticas', 'src/view/estadisticas/estadisticas.html', false, false);
+            window.set('ventanaEstadistica' ,ventanaEstadistica)
             ventanaEstadistica.show();
             ventanaEstadistica.on('close', () => {
                 ventanaEstadistica.close();
@@ -92,26 +116,37 @@ ipcMain.on('openMenu', (e, openMenu) => {
             break;
 
         case 'ventanaListadoActivos':
-            const ventanaListadoActivos = createWindow(width, height, 'listado de activos', 'src/view/activos/listadoActivos.html', false, false);
+            let  ventanaListadoActivos
+            if(!window.has(ventanaListadoActivos)){
+                ventanaListadoActivos = createWindow(width, height, 'listado de activos', 'src/view/activos/listadoActivos.html', false, false);
+                window.set('ventanaListadoActivos' ,ventanaListadoActivos)
+            }
             ventanaListadoActivos.show();
-            ipcMain.on('activoActualizado',( e, activo)=>{
-                ventanaListadoActivos.webContents.send('activoActualizado', activo)
+            
+            
+            ipcMain.on('crudActivo',( e, data)=>{
+                ventanaListadoActivos.webContents.send('crudActivo', data)
             })
-            ventanaListadoActivos.on('close', () => {
-                ventanaListadoActivos.close();
+
+            ventanaListadoActivos.on('close', (e) => {
+                e.preventDefault();
+                ventanaListadoActivos.hide()
             })
             break;
 
         case 'ventanaIngresoActivo':
-            let ventanaIngresoActivo = createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
-            ventanaIngresoActivo.show();
-            ventanaIngresoActivo.webContents.on('dom-ready', ()=>{
-                const crear = 'crear'
-                ventanaIngresoActivo.webContents.send('crear', crear)
-            })
+            let ventanaIngresoActivo
+            if(!window.has(ventanaIngresoActivo)){
+                ventanaIngresoActivo = createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
+                window.set('ventanaIngresoActivo' ,ventanaIngresoActivo)
+            }
+             ventanaIngresoActivo.show();
+
             ventanaIngresoActivo.on('close', (e) => {
-                ventanaIngresoActivo.close();
+                ventanaIngresoActivo.hide();
+                e.preventDefault()
             })
+
             break;
 
         default:
@@ -119,37 +154,84 @@ ipcMain.on('openMenu', (e, openMenu) => {
     }
 })
 
-// abre la ventana crear activo para edicion de algun activo en especial.
+// abre la ventana crear activo para edicion de algun activo en especial.///////////////////////
 ipcMain.on('activoId', (e, activoId) => {
     
-    const editarActivo =  createWindow(width, height, 'Datos activos', 'src/view/activos/formatoActivo.html', false, false);
-    editarActivo.show();
-    editarActivo.webContents.on('dom-ready',()=>{
-        editarActivo.webContents.send('activoId', activoId)
-    })
+    let ventanaIngresoActivo = window.get('ventanaIngresoActivo')
    
-    editarActivo.on('close', (e) => {
-       editarActivo.hide();
-       e.preventDefault();
-       return false
-       
-    })    
- 
-    // habre ventana fija de confirmacion de eliminar activo
-    ipcMain.on('eliminarActivo', (e, activo)=>{
-        //const padre = BrowserWindow.getFocusedWindow()
+    ventanaIngresoActivo.show();
 
-        const  confirmarEliminarActivo =  createWindowchild(800, 800, 'Datos activos', 'src/view/activos/confirmarEliminarActivo.html', false, false, editarActivo);
-        confirmarEliminarActivo.show();
-
-        confirmarEliminarActivo.webContents.on('dom-ready',()=>{
-            confirmarEliminarActivo.webContents.send('eliminarActivo', activo)
-        })
-        
-        ipcMain.on('confirmarEliminar', (e, activo)=>{
-            editarActivo.webContents.send('confirmarEliminar', activo)
-        
-        })  
+    ventanaIngresoActivo.webContents.on('dom-ready',()=>{
+        ventanaIngresoActivo.webContents.send('activoId', activoId)
     })
+     
+ 
+})
 
+// ////abre ventana fija de confirmacion de eliminar activo
+ipcMain.on('eliminarActivo', (e, activo)=>{
+  
+    let  confirmarEliminarActivo
+    const ventanaIngresoActivo = window.get('ventanaIngresoActivo')
+     if(!window.has(confirmarEliminarActivo)){
+        confirmarEliminarActivo =  createWindowchild(800, 800, 'Datos activos', 'src/view/activos/confirmarEliminarActivo.html', false, false, ventanaIngresoActivo);
+        window.set('confirmarEliminarActivo' ,confirmarEliminarActivo)
+    }      
+    confirmarEliminarActivo.show();
+
+    confirmarEliminarActivo.webContents.on('dom-ready',()=>{
+        confirmarEliminarActivo.webContents.send('eliminarActivo', activo)
+    })
+    
+    ipcMain.on('confirmarEliminar', (e, activo)=>{
+        ventanaIngresoActivo.webContents.send('confirmarEliminar', activo)
+    
+    })  
+
+    ipcMain.on('activoEliminado', (e)=>{
+        confirmarEliminarActivo.close();
+    }) 
+
+    confirmarEliminarActivo.on('close', (e) => {
+        confirmarEliminarActivo.hide();
+        e.preventDefault()
+    })
+})
+
+// solictud de mantenimiento
+ipcMain.on('ventanaSolicitudMtto', (e, activo)=>{
+    let ventanaSolicitudMtto
+
+    if(!window.get('ventanaSolicitudMtto')){   
+        ventanaSolicitudMtto = createWindow(width, height, 'Nueva solictud', 'src/view/solicitudesMtto/formatoSolicitud.html', false, false);
+        window.set('ventanaSolicitudMtto',ventanaSolicitudMtto )
+    }{
+        ventanaSolicitudMtto= window.get('ventanaSolicitudMtto')
+    }
+    ventanaSolicitudMtto.show();
+
+    if(activo!==null){
+        ventanaSolicitudMtto.webContents.on('dom-ready',()=>{
+            ventanaSolicitudMtto.webContents.send('solictudMttoActivo', activo)
+        })
+    }
+
+    ventanaSolicitudMtto.on('close', (e)=>{
+        ventanaSolicitudMtto.hide()
+        e.preventDefault()
+    })
+})
+
+// consultar Mtto
+ipcMain.on('ventanaConsultarMtto', (e, activo)=>{
+    let ventanaConsultarMtto
+    if(!window.get('ventanaConsultarMtto')){
+        ventanaConsultarMtto = createWindow(width, height, 'Consultar reporte de Mtto', 'src/view/solicitudesMtto/consultaReporte.html', false, false);
+    }
+    ventanaConsultarMtto.show();
+
+    ventanaConsultarMtto.on('close', (e)=>{
+        ventanaConsultarMtto.close()
+       
+    })
 })

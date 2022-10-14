@@ -7,3 +7,37 @@
 #observacionActivo {
     resize: none;
 }
+
+.resultado{
+    top: 28%;
+    left: 30%;
+    max-width: 69% ;
+}   
+
+.resultado{
+    top: 28%;
+    left: 30%;
+    max-width: 69% ;
+}    
+
+.reporte {
+    top: 63%;
+    left: 2%;
+    max-width: 69% ;
+}
+
+.solicitud {
+    top: 63%;
+    left: 26.5%;
+    max-width: 69% ;
+}
+
+#descripcionActivo{
+    resize: none;
+}
+#recomendacionActivo{
+    resize: none;
+}
+#observacionActivo{
+    resize: none;
+}

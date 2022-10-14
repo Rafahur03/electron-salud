@@ -32,7 +32,7 @@ ipcRenderer.on('eliminarActivo', (e, dataActivo)=>{
 buttonconfirmar.addEventListener('click' ,e=>{
 
     if(confirmarActivo.value !== activo.id_equipo){
-        alert('El codigo ingresado no coincide', form, buttonconfirmar)
+        alert('El codigo ingresado no coincide', form, buttonconfirmar,'alert-danger')
         return
     }
 

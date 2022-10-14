@@ -18,23 +18,28 @@ window.addEventListener('DOMContentLoaded', e => {
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (user.value === "") {
-        alert('Debe ingresar un usuario', divform, form)
+    if (user.value === "" && password.value === "") {
+        alert('Todos los campos son obligatorios', divform, form,'alert-danger')
         return
     }
-    if (password.value === "") {
-        alert('Debe ingresar su password', divform, form)
+
+    if (user.value === "") {
+        alert('Debe ingresar un usuario', divform, form,'alert-danger')
+        return
+    }
+    if (password.value === "" || password.value.length <= 0) {
+        alert('Debe ingresar su password', divform, form,'alert-danger')
         return
     }
     if (password.value.length <= 5) {
-        alert('El password ingresado es muy corto', divform, form)
+        alert('El password ingresado es muy corto', divform, form,'alert-danger')
         return
     }
 
     const userData= await usuario(user.value)
      console.log(userData)
     if (userData.password !== password.value){
-        alert('Password incorrecta', divform, form)
+        alert('Password incorrecta', divform, form,'alert-danger')
     }
 
     delete userData.password
