@@ -41,3 +41,18 @@
 #observacionActivo{
     resize: none;
 }
+
+/* imagenes de activos */
+#dragDropImgActivo{
+    height: 17vw;
+    border: 0.2rem dashed #0dcaf0;
+    cursor: pointer
+}
+
+#dragDropImgActivo.active{
+    border: 0.2rem solid #6c757d;
+}
+
+#imgActivo{
+    height: 17vw;
+}

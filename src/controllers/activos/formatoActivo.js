@@ -9,12 +9,13 @@ const { alert } = require('../../helper/alert')
 
 const body = document.querySelector('body')
 // botones
-const divDataActivo = document.querySelector('.dataActivo')
+
 const buttonCrear = document.querySelector('.crear')
 const buttonActualizar = document.querySelector('.actualizar')
 const buttonImprimir = document.querySelector('.print')
 const buttonSolicitar = document.querySelector('.solicitar')
 const buttonEliminar = document.querySelector('.eliminar')
+const img = document.querySelector('#imgActivo')
 //formulario 
 const form = document.querySelector('form')
 
@@ -56,7 +57,7 @@ const divNitProveedor = document.querySelector('.nitProveedor')
 const divIngresoActivo = document.querySelector('.ingresoActivo')
 const divUltimoMtto = document.querySelector('.ultimoMtto')
 const divProximoMtto = document.querySelector('.proximoMtto')
-
+const divDataActivo = document.querySelector('.dataActivo')
 
 const tbody = document.querySelector('tbody')
 // Datalist

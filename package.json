@@ -16,6 +16,7 @@
   "author": "Rafael Jose Huertas Ruiz",
   "license": "ISC",
   "dependencies": {
+    "bootstrap-icons": "^1.9.1",
     "dotenv": "^16.0.2",
     "electron": "^20.1.4",
     "electron-reload": "^2.0.0-alpha.1",
