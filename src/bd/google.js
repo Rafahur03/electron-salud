@@ -87,7 +87,7 @@ async function saveImg(){
 
         const media = {
             mimeType: 'image/jpg',
-            body: fs.createReadStream('./ataraxia.jpg','binary')
+            body: fs.createReadStream('./ataraxia.jpg','base64')
         }
        // console.log(fs.createReadStream('./ataraxia.jpg'))
         const response = await driveService.files.create({
@@ -101,9 +101,9 @@ async function saveImg(){
     }
 }
 
-// saveImg().then(data => {
-//     console.log(data)
-//     //https://drive.google.com/uc?export=view&id=
-// })
+saveImg().then(data => {
+    console.log(data)
+    //https://drive.google.com/uc?export=view&id=
+})
 
 module.exports = { saveImg }
