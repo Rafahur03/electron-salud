@@ -1,15 +1,15 @@
 const { ipcRenderer } = require('electron')
-const { dataConfActivo,
-    showActivo,
+const { saveImg } = require('../../bd/google')
+const { showActivo,
     actualizarActivo,
     crearActivo,
-    eliminarActivo,
-    usuario } = require('../../bd/bd')
+    eliminarActivo } = require('../../bd/bd')
+    const{cargarCarrusel, validarFormatImg} = require('../../helper/cargarImagenActivoCarrusel')
+
 const { alert } = require('../../helper/alert')
 
 const body = document.querySelector('body')
 // botones
-
 const buttonCrear = document.querySelector('.crear')
 const buttonActualizar = document.querySelector('.actualizar')
 const buttonImprimir = document.querySelector('.print')
@@ -51,6 +51,7 @@ const inputIngresoActivo = document.querySelector('#ingresoActivo')
 const inputUltimoMtto = document.querySelector('#ultimoMtto')
 const inputProximoMtto = document.querySelector('#proximoMtto')
 const inputNitProveedor = document.querySelector('#nitProveedor')
+const inputActivoImg = document.querySelector('#inputActivoImg')
 //div solo se muestran al editar
 const divhistorialMantenimiento = document.querySelector('.historialMantenimiento')
 const divNitProveedor = document.querySelector('.nitProveedor')
@@ -58,6 +59,12 @@ const divIngresoActivo = document.querySelector('.ingresoActivo')
 const divUltimoMtto = document.querySelector('.ultimoMtto')
 const divProximoMtto = document.querySelector('.proximoMtto')
 const divDataActivo = document.querySelector('.dataActivo')
+const dragDropImgActivo = document.querySelector('#dragDropImgActivo')
+const carruselImgActivo = document.querySelector('#carruselImgActivo')
+const carouselInner = document.querySelector('.carousel-inner')
+const carouselIndicators = document.querySelector('.carousel-indicators')
+const dragtext = document.querySelector('.dragtext')
+
 
 const tbody = document.querySelector('tbody')
 // Datalist
@@ -81,6 +88,7 @@ let tipoActivos
 let estadoActivo
 let usuarios
 let frecuenciaMtto
+let imagenes= []
 // desde menu crear activo
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -93,7 +101,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     tipoActivos = config[5]
     estadoActivo = config[6]
     usuarios = config[7]
-    frecuenciaMtto =config[8]
+    frecuenciaMtto = config[8]
 
     clasificacionActivos.forEach(item => {
         if (item.estado !== 3) {
@@ -164,7 +172,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             listaUsuario.appendChild(option)
         }
     })
-    
+
     frecuenciaMtto.forEach(item => {
         if (item.estado !== 3) {
             const option = document.createElement('option')
@@ -174,37 +182,111 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     })
 
+    dragDropImgActivo.onclick = ()=>{abrirImputImagen()}
+    inputActivoImg.onchange = (e)=>{creaAgregarImg(e)}
+
+   await saveImg()
 })
 
-inputProveedorActivo.addEventListener('change',(e)=>{
-   const nit= e.target.value.split(' - ')[1]
-   typeof nit
+// drop andrap imagenes
+dragDropImgActivo.addEventListener('dragover', e => {
+    dragtext.textContent = 'Suelta para cargar'
+    dragDropImgActivo.classList.add('active')
+    e.preventDefault()
+})
 
-   if(typeof nit === 'undefined'){
-    inputNitProveedor.value=''
+dragDropImgActivo.addEventListener('dragleave', e => {
+    dragtext.textContent = 'Arrastra y suelta'
+    dragDropImgActivo.classList.remove('active')
+    e.preventDefault()
+})
+
+dragDropImgActivo.addEventListener('drop', e => {
+    const newimagenes = e.dataTransfer.files
+    imagenes = validarFormatImg(newimagenes)
+    dragDropImgActivo.classList.add('d-none')
+    carruselImgActivo.classList.remove('d-none')
+    cargarCarrusel(imagenes, eliminarImg, carouselIndicators, carouselInner)
+    e.preventDefault()
+})
+
+carruselImgActivo.addEventListener('dblclick',()=>{
+    inputActivoImg.click()
+})
+
+const abrirImputImagen = ()=>{
+    inputActivoImg.click()
+}
+
+const creaAgregarImg =  e =>{
+     const newimagenes = e.target.files
+     console.log(newimagenes)
+    if(typeof imagenes !== 'undefined'){
+        if(imagenes.length !==0 ){
+            const newimag=validarFormatImg(newimagenes)
+            imagenes = listImg.concat(newimag)
+        }else{
+            imagenes = validarFormatImg(newimagenes)
+        }
+    }else{
+        imagenes = validarFormatImg(newimagenes)
+    }
+    
+    dragDropImgActivo.classList.add('d-none')
+    carruselImgActivo.classList.remove('d-none')
+    cargarCarrusel(imagenes, eliminarImg, carouselIndicators, carouselInner)
+}
+
+const eliminarImg = e =>{
+   if(!e.target.id){
     return
    }
-   
-   inputNitProveedor.value = nit
+   const id = parseInt(e.target.id.split('-')[1].trim())
+    const newListImg= imagenes.filter((image, index)=>{
+        if( index !== id){
+            return(image)
+        }
+    })
+
+    imagenes = newListImg
+    if(imagenes.length === 0){
+        dragDropImgActivo.classList.remove('d-none','active')
+        
+        carruselImgActivo.classList.add('d-none')
+        return
+    }
+    cargarCarrusel(imagenes, eliminarImg, carouselIndicators, carouselInner)
+}
+///////////////////////////////////////////////////////
+inputProveedorActivo.addEventListener('change', (e) => {
+    const nit = e.target.value.split(' - ')[1]
+    typeof nit
+
+    if (typeof nit === 'undefined') {
+        inputNitProveedor.value = ''
+        return
+    }
+
+    inputNitProveedor.value = nit
 })
 
 
 // crear un nuevo activo
 buttonCrear.addEventListener('click', async (e) => {
     const activo = datos()
-    if(!activo){
-       return
+    if (!activo) {
+        return
     }
 
     const newActivo = await crearActivo(activo)
-    if (newActivo === 0 || newActivo =='err') {
+    if (newActivo === 0 || newActivo == 'err') {
         alert('No fue posible guardar los datos, intentelo mas tarde', body, divDataActivo, 'alert-danger')
         return
     }
     inputClasificacionActivos.classList.add('d-none')
     inputIdactivo.classList.remove('d-none')
     form.id = `act${newActivo.id}`
-    
+
     inputIdactivo.value = newActivo.siglas.trim() + newActivo.consecutivo_interno
 
     buttonCrear.classList.add('d-none')
@@ -213,8 +295,8 @@ buttonCrear.addEventListener('click', async (e) => {
     buttonSolicitar.classList.remove('d-none')
     buttonEliminar.classList.remove('d-none')
     const data = {
-        id:newActivo.id,
-        accion:'crear'
+        id: newActivo.id,
+        accion: 'crear'
     }
     console.log(data)
     ipcRenderer.send('crudActivo', data)
@@ -223,18 +305,16 @@ buttonCrear.addEventListener('click', async (e) => {
         inputEstadoActivo.classList.add('text-success')
     } else {
         inputEstadoActivo.classList.add('text-danger')
-    }
-
-
+    } 
 })
 
 // actualiza los datos del activos seleccionado 
 buttonActualizar.addEventListener('click', async () => {
     const activo = datos()
 
-    if(!activo){
+    if (!activo) {
         return
-     }
+    }
     const resp = await actualizarActivo(activo)
 
     if (resp === 0) {
@@ -242,8 +322,8 @@ buttonActualizar.addEventListener('click', async () => {
         return
     }
     const data = {
-        id:activo.id,
-        accion:'actualizar'
+        id: activo.id,
+        accion: 'actualizar'
     }
     ipcRenderer.send('crudActivo', data)
     alert('Activo actualizado correctamente', body, divDataActivo, 'alert-success')
@@ -303,7 +383,7 @@ ipcRenderer.on('activoId', async (e, activoId) => {
     inputIdactivo.classList.remove('d-none')
     labelCodigoInterno.classList.remove('d-none')
     labelClasificacionActivo.classList.add('d-none')
-    inputClasificacionActivos.classList.add('d-none')   
+    inputClasificacionActivos.classList.add('d-none')
     buttonCrear.classList.add('d-none')
     buttonActualizar.classList.remove('d-none')
     buttonImprimir.classList.remove('d-none')
@@ -312,8 +392,7 @@ ipcRenderer.on('activoId', async (e, activoId) => {
     divhistorialMantenimiento.classList.remove('d-none')
 
     const activo = await showActivo(activoId)
-
-    form.id= `act${activo.id}`
+    form.id = `act${activo.id}`
     inputIdactivo.value = activo.siglas.trim() + activo.consecutivo_interno
     inputNombreActivo.value = activo.nombreActivo.trim()
     inputMarcaActivo.value = activo.marca.trim()
@@ -322,15 +401,15 @@ ipcRenderer.on('activoId', async (e, activoId) => {
     inputProcesoActivo.value = activo.proceso.trim()
     inputAreaActivo.value = activo.area.trim()
     inputUbicacionActivo.value = activo.ubicacion.trim()
-    
+
     if (activo.nombre_1 === '') {
         inputResponsableActivo.value = `${activo.nombre.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()}`
     } else {
         inputResponsableActivo.value = `${activo.nombre.trim()} ${activo.nombre_1.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()}`
     }
-   
+
     inputEstadoActivo.value = activo.estado.trim()
-    inputProveedorActivo.value =  `${activo.razon_social.trim()} - ${activo.nit.trim()} - ${activo.nombre_comercial.trim()} `
+    inputProveedorActivo.value = `${activo.razon_social.trim()} - ${activo.nit.trim()} - ${activo.nombre_comercial.trim()} `
     inputNitProveedor.value = activo.nit.trim()
     inputFacturaActivo.value = activo.numero_factura.trim()
     inputValorActivo.value = activo.valor
@@ -349,97 +428,126 @@ ipcRenderer.on('activoId', async (e, activoId) => {
         inputEstadoActivo.classList.add('text-danger')
         estadinputEstadoActivooActivo.classList.remove('text-success')
     }
-
+    dragDropImgActivo.classList.add('d-none')
+    carruselImgActivo.classList.remove('d-none')
+    inputActivoImg.onchange = (e)=>{actualizaImges(e)}
+    
+    imagenes = activo.url_img.trim().split(',')
+    cargarCarrusel(imagenes, eliminarImage, carouselIndicators, carouselInner)
 })
+
+const actualizaImges = e =>{
+    const newimagenes = e.target.files
+     const newimag=validarFormatImg(newimagenes)
+    imagenes = imagenes.concat(newimag) 
+    dragDropImgActivo.classList.add('d-none')
+    carruselImgActivo.classList.remove('d-none')
+    cargarCarrusel(imagenes, eliminarImage, carouselIndicators, carouselInner)
+}
+
+const eliminarImage = e =>{ 
+    if(!e.target.id){
+     return
+    }
+    const id = parseInt(e.target.id.split('-')[1].trim())
+     const newListImg= imagenes.filter((image, index)=>{
+         if( index !== id){
+             return(image)
+         }
+     })
+ 
+     imagenes = newListImg
+     if(imagenes.length === 0){
+         dragDropImgActivo.classList.remove('d-none','active')
+         
+         carruselImgActivo.classList.add('d-none')
+         return
+     }
+     
+     cargarCarrusel(imagenes, eliminarImage, carouselIndicators, carouselInner)
+}
 
 // solcitar mtto
 
-buttonSolicitar.addEventListener('click', () => {
-    console.log('clik')
-    const activo = datos()
-    ipcRenderer.send('ventanaSolicitudMtto', activo)
-
-})
-
 const datos = () => {
-    
+
     let id, clasificacion_id, consecutivo_interno, marca_id, proceso_id, area_id, usuario_id, estado_id, proveedor_id, frecuencia_id, tipo_activo_id, create_by, fecha_creacion, nombre, modelo, serie, ubicacion, numero_factura, valor, fecha_compra, vencimiento_garantia, descripcion, recomendaciones_Mtto, obervacion
-  
+
     if (form.id) {
         id = parseInt(form.id.replace('act', ''))
     }
 
-    if (inputClasificacionActivos.value) {  
+    if (inputClasificacionActivos.value) {
         console.log(1)
-        const index= clasificacionActivos.findIndex(item => item.nombre.trim() === inputClasificacionActivos.value.trim())
+        const index = clasificacionActivos.findIndex(item => item.nombre.trim() === inputClasificacionActivos.value.trim())
         if (index !== -1) {
             clasificacion_id = clasificacionActivos[index].id
             inputClasificacionActivos.classList.remove('border-danger')
-        }else{
+        } else {
             alert('Debe seleccionar una clasificacion del listado', body, divDataActivo, 'alert-danger')
             inputClasificacionActivos.classList.add('border-danger')
             return
         }
-    }else{
+    } else {
         if (inputIdactivo.value) {
             let codigo = inputIdactivo.value.trim()
             codigo = codigo.match(/[a-z]+|[^a-z]+/gi).join(" ").replace(/\s+/g, " ").split(' ')
             consecutivo_interno = codigo[1]
-    
-            const index = clasificacionActivos.findIndex( item => item.siglas.trim() === codigo[0] )
+
+            const index = clasificacionActivos.findIndex(item => item.siglas.trim() === codigo[0])
             if (index !== -1) {
                 clasificacion_id = clasificacionActivos[index].id
             }
-        }else{
+        } else {
             alert('Debe seleccionar una clasificacion del listado', body, divDataActivo, 'alert-danger')
             inputClasificacionActivos.classList.add('border-danger')
             return
-        }    
+        }
     }
 
     if (inputMarcaActivo.value) {
         const index = marca.findIndex(item => item.marca.trim() === inputMarcaActivo.value.trim())
-         if (index !== -1) {
+        if (index !== -1) {
             marca_id = marca[index].id
             inputMarcaActivo.classList.remove('border-danger')
-        }else{
+        } else {
             alert('Debe seleccionar una marca del listado', body, divDataActivo, 'alert-danger')
             inputMarcaActivo.classList.add('border-danger')
             return
         }
-    }else{
+    } else {
         alert('Debe seleccionar una marca del listado', body, divDataActivo, 'alert-danger')
         inputMarcaActivo.classList.add('border-danger')
         return
     }
 
     if (inputProcesoActivo.value) {
-        const index = procesos.findIndex(item => item.proceso.trim() === inputProcesoActivo.value.trim() )
+        const index = procesos.findIndex(item => item.proceso.trim() === inputProcesoActivo.value.trim())
         if (index !== -1) {
             proceso_id = procesos[index].id
             inputProcesoActivo.classList.remove('border-danger')
-        }else{
+        } else {
             alert('Debe seleccionar un proceso del listado', body, divDataActivo, 'alert-danger')
             inputProcesoActivo.classList.add('border-danger')
             return
         }
-    }else{
+    } else {
         alert('Debe seleccionar un proceso del listado', body, divDataActivo, 'alert-danger')
         inputProcesoActivo.classList.add('border-danger')
         return
     }
 
     if (inputAreaActivo.value) {
-        const index = areas.findIndex( item => item.area.trim() === inputAreaActivo.value.trim() )
+        const index = areas.findIndex(item => item.area.trim() === inputAreaActivo.value.trim())
         if (index !== -1) {
             area_id = areas[index].id
             inputAreaActivo.classList.remove('border-danger')
-        }else{
+        } else {
             alert('Debe seleccionar un proceso del listado', body, divDataActivo, 'alert-danger')
             inputAreaActivo.classList.add('border-danger')
             return
         }
-    }else{
+    } else {
         alert('Debe seleccionar un proceso del listado', body, divDataActivo, 'alert-danger')
         inputAreaActivo.classList.add('border-danger')
         return
@@ -450,7 +558,7 @@ const datos = () => {
             if (item.nombre_1 === '') {
                 const nombre = `${item.nombre.trim()} ${item.apellido.trim()} ${item.apellido_1.trim()}`
                 if (nombre === inputResponsableActivo.value.trim()) {
-                    usuario_id = item.id 
+                    usuario_id = item.id
                     inputResponsableActivo.classList.remove('border-danger')
                 }
             } else {
@@ -458,225 +566,225 @@ const datos = () => {
                 if (nombre === inputResponsableActivo.value.trim()) {
                     usuario_id = item.id
                     inputResponsableActivo.classList.remove('border-danger')
-                }           
+                }
             }
         })
-        if(!usuario_id){
+        if (!usuario_id) {
             alert('Debe seleccionar un responsable del listado', body, divDataActivo, 'alert-danger')
             inputResponsableActivo.classList.add('border-danger')
-        return
+            return
         }
 
-    }else{
+    } else {
         alert('Debe seleccionar un responsable del listado', body, divDataActivo, 'alert-danger')
         inputResponsableActivo.classList.add('border-danger')
         return
     }
 
     if (inputEstadoActivo.value) {
-        const index = estadoActivo.findIndex(item => item.estado.trim() === inputEstadoActivo.value.trim() )
+        const index = estadoActivo.findIndex(item => item.estado.trim() === inputEstadoActivo.value.trim())
         if (index !== -1) {
             estado_id = estadoActivo[index].id
             inputEstadoActivo.classList.remove('border-danger')
-        }else{
+        } else {
             alert('Debe seleccionar un estado del listado', body, divDataActivo, 'alert-danger')
             inputEstadoActivo.classList.add('border-danger')
             return
         }
-    }else{
+    } else {
         alert('Debe seleccionar un estado del listado', body, divDataActivo, 'alert-danger')
         inputEstadoActivo.classList.add('border-danger')
         return
     }
-    
+
     if (inputProveedorActivo.value) {
         const razonSocial = inputProveedorActivo.value.split(' - ')[0].trim()
         const index = proveedores.findIndex(item => item.razon_social.trim() === razonSocial)
         if (index !== -1) {
             proveedor_id = proveedores[index].id
             inputProveedorActivo.classList.remove('border-danger')
-        }else{
+        } else {
             alert('Debe seleccionar un proveedor del listado', body, divDataActivo, 'alert-danger')
             inputProveedorActivo.classList.add('border-danger')
             return
         }
-    }else{
+    } else {
         alert('Debe seleccionar un proveedor del listado', body, divDataActivo, 'alert-danger')
         inputProveedorActivo.classList.add('border-danger')
         return
     }
 
     if (inputFrecuenciaMtto.value) {
-        const index = frecuenciaMtto.findIndex(item => item.frecuencia.trim() === inputFrecuenciaMtto.value.trim() )
+        const index = frecuenciaMtto.findIndex(item => item.frecuencia.trim() === inputFrecuenciaMtto.value.trim())
         if (index !== -1) {
             frecuencia_id = frecuenciaMtto[index].id
             inputFrecuenciaMtto.classList.remove('border-danger')
-        }else{
+        } else {
             alert('Debe seleccionar una frecuencia del listado', body, divDataActivo, 'alert-danger')
             inputFrecuenciaMtto.classList.add('border-danger')
             return
         }
-    }else{
+    } else {
         alert('Debe seleccionar una frecuencia del listado', body, divDataActivo, 'alert-danger')
         inputFrecuenciaMtto.classList.add('border-danger')
         return
     }
 
     if (inputTipoActivo.value) {
-        const index = tipoActivos.findIndex(item => item.tipo_activo.trim() === inputTipoActivo.value.trim() )
+        const index = tipoActivos.findIndex(item => item.tipo_activo.trim() === inputTipoActivo.value.trim())
         if (index !== -1) {
             tipo_activo_id = tipoActivos[index].id
             inputTipoActivo.classList.remove('border-danger')
-        }else{
+        } else {
             alert('Debe seleccionar un tipo de activi del listado', body, divDataActivo, 'alert-danger')
             inputTipoActivo.classList.add('border-danger')
             return
         }
-    }else{
+    } else {
         alert('Debe seleccionar un tipo de actividad del listado', body, divDataActivo, 'alert-danger')
         inputTipoActivo.classList.add('border-danger')
         return
     }
 
-    if (!id){
+    if (!id) {
         const user = JSON.parse(localStorage.getItem('userData'))
         create_by = user.id
         fecha_creacion = new Date().toISOString().slice(0, 10)
     }
 
-    if(inputNombreActivo.value){
-        const validar = validarInput(inputNombreActivo, 60, 'nombre','obligatorio' )
-        if(!validar){
+    if (inputNombreActivo.value) {
+        const validar = validarInput(inputNombreActivo, 60, 'nombre', 'obligatorio')
+        if (!validar) {
             return
         }
-        nombre= validar
-    }else{
+        nombre = validar
+    } else {
         alert('Debe ingresar un nombre', body, divDataActivo, 'alert-danger')
         inputNombreActivo.classList.add('border-danger')
         return
     }
 
-    if(inputModeloActivo.value){
+    if (inputModeloActivo.value) {
         const validar = validarInput(inputModeloActivo, 30, 'modelo')
-        if(!validar){
+        if (!validar) {
             return
         }
-        modelo= validar
-    }else{
+        modelo = validar
+    } else {
         alert('El campo modelo esta vacio si no lo conoce ingrese no registra', body, divDataActivo, 'alert-danger')
         inputModeloActivo.classList.add('border-danger')
         return
     }
 
-    if(inputSerieActivo.value){
+    if (inputSerieActivo.value) {
         const validar = validarInput(inputSerieActivo, 50, 'serie')
-        if(!validar){
+        if (!validar) {
             return
         }
-        serie= validar
-    }else{
+        serie = validar
+    } else {
         alert('El campo serie esta vacio si no lo conoce ingrese no registra', body, divDataActivo, 'alert-danger')
         inputSerieActivo.classList.add('border-danger')
         return
     }
 
-    if(inputUbicacionActivo.value){
-        const validar = validarInput(inputUbicacionActivo, 50, 'ubicacion','obligatorio')
-        if(!validar){
+    if (inputUbicacionActivo.value) {
+        const validar = validarInput(inputUbicacionActivo, 50, 'ubicacion', 'obligatorio')
+        if (!validar) {
             return
         }
         ubicacion = validar
-    }else{
+    } else {
         alert('El campo ubicacion es obligatorio', body, divDataActivo, 'alert-danger')
         inputUbicacionActivo.classList.add('border-danger')
         return
     }
 
-    if(inputFacturaActivo.value){
+    if (inputFacturaActivo.value) {
         const validar = validarInput(inputFacturaActivo, 30, 'Numero de factura')
-        if(!validar){
+        if (!validar) {
             return
         }
         numero_factura = validar
-    }else{
+    } else {
         alert('El campo factura esta vacio si no lo conoce ingrese no registra', body, divDataActivo, 'alert-danger')
         inputFacturaActivo.classList.add('border-danger')
         return
     }
 
-    if(inputValorActivo.value){
+    if (inputValorActivo.value) {
         const validar = validarInput(inputValorActivo, 15, 'valor')
-        if(!validar){
+        if (!validar) {
             return
         }
         valor = validar
-    }else{
+    } else {
         alert('El campo valor esta vacio si no lo conoce ingrese 0', body, divDataActivo, 'alert-danger')
         inputValorActivo.classList.add('border-danger')
         return
     }
 
-    if(inputFechaCompra.value){
+    if (inputFechaCompra.value) {
         const validar = validarInput(inputFechaCompra, 10, 'fecha de compra', 'obligatorio')
-        if(!validar){
+        if (!validar) {
             return
         }
         fecha_compra = validar
-    }else{
+    } else {
         alert('El campo fecha de compra es obligatorio', body, divDataActivo, 'alert-danger')
         inputFechaCompra.classList.add('border-danger')
         return
     }
 
-    if(inputGarantiaActivo.value){
+    if (inputGarantiaActivo.value) {
         const validar = validarInput(inputGarantiaActivo, 10, 'vencimiento de garantia', 'obligatorio')
-        if(!validar){
+        if (!validar) {
             return
         }
         vencimiento_garantia = validar
-    }else{
+    } else {
         alert('El campo vencimiento de garantia es obligatorio', body, divDataActivo, 'alert-danger')
         inputGarantiaActivo.classList.add('border-danger')
         return
     }
 
-    if(inputDescripcionActivo.value){
+    if (inputDescripcionActivo.value) {
         const validar = validarInput(inputDescripcionActivo, 1000, 'descripcion equipo')
-        if(!validar){
+        if (!validar) {
             return
         }
         descripcion = validar
-    }else{
+    } else {
         alert('El campo descripcion esta vacio si no lo conoce ingrese no registra', body, divDataActivo, 'alert-danger')
         inputDescripcionActivo.classList.add('border-danger')
         return
     }
 
-    if(inputRecomendacionActivo.value){
+    if (inputRecomendacionActivo.value) {
         const validar = validarInput(inputRecomendacionActivo, 500, 'Recomendaciones de Mtto')
-        if(!validar){
+        if (!validar) {
             return
         }
         recomendaciones_Mtto = validar
-    }else{
+    } else {
         alert('El campo Recomendaciones de Mtto esta vacio si no lo conoce ingrese no registra', body, divDataActivo, 'alert-danger')
         inputRecomendacionActivo.classList.add('border-danger')
         return
     }
 
-    if(inputObservacionActivo.value){
+    if (inputObservacionActivo.value) {
         const validar = validarInput(inputObservacionActivo, 500, 'observacion')
-        if(!validar){
+        if (!validar) {
             return
         }
         obervacion = validar
-    }else{
+    } else {
         alert('El campo observacion esta vacio si no lo conoce ingrese no registra', body, divDataActivo, 'alert-danger')
         inputObservacionActivo.classList.add('border-danger')
         return
     }
 
-  
+
     const activo = {
         id,
         clasificacion_id,
@@ -702,36 +810,36 @@ const datos = () => {
         tipo_activo_id,
         create_by,
         fecha_creacion,
-        url_img:'No registra'
+        url_img: 'No registra'
     }
     return activo
 }
 
-function validarInput(node, size, name, obligatorio ){
-    if (node.value.trim() === ''){
+function validarInput(node, size, name, obligatorio) {
+    if (node.value.trim() === '') {
 
-        if(obligatorio){
+        if (obligatorio) {
             alert(`El campo ${name} es obligatorio`, body, divDataActivo, 'alert-danger')
             node.classList.add('border-danger')
             return
-        }else{
-        alert(`Si no cuenta con el campo ${name} escriba no registra `, body, divDataActivo, 'alert-danger')
-        node.classList.add('border-danger')
+        } else {
+            alert(`Si no cuenta con el campo ${name} escriba no registra `, body, divDataActivo, 'alert-danger')
+            node.classList.add('border-danger')
             return
         }
     }
 
-    if(node.value.trim().length > size){
+    if (node.value.trim().length > size) {
         alert(`El campo modelo no puede superar ${size} caracteres`, body, divDataActivo, 'alert-danger')
         node.classList.add('border-danger')
         return
     }
-    if(!obligatorio){
-        if(node.value.trim().toLowerCase() == 'no registra'){
+    if (!obligatorio) {
+        if (node.value.trim().toLowerCase() == 'no registra') {
             node.classList.remove('border-danger')
-            return('No Registra')
+            return ('No Registra')
         }
     }
     node.classList.remove('border-danger')
-    return(node.value.trim()) 
+    return (node.value.trim())
 }

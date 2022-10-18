@@ -1,5 +1,6 @@
 const { alert } = require('../../helper/alert')
-const {cargarCarrusel} = require('../../helper/mostrarCarrusel')
+const{cargarCarrusel, validarFormatImg} = require('../../helper/cargarImagenActivoCarrusel')
+
 
 const body = document.querySelector('body')
 const divDataActivo = document.querySelector('.dataActivo')
@@ -9,7 +10,14 @@ const inputActivoImg = document.querySelector('#inputActivoImg')
 const carouselIndicators = document.querySelector('.carousel-indicators')
 const carouselInner = document.querySelector('.carousel-inner')
 const carruselImgActivo = document.querySelector('#carruselImgActivo')
-const eliminarImagen = document.querySelector('.eliminarImagen')
+let  listImg 
+
+document.addEventListener('DOMContentLoaded', () => {
+    dragDropImgActivo.onclick = ()=>{abrirImputImagen()}
+    inputActivoImg.onchange = (e)=>{creaAgregarImg(e)}
+    
+})
+
 
 dragDropImgActivo.addEventListener('dragover', e => {
     dragtext.textContent = 'Suelta para cargar'
@@ -25,62 +33,60 @@ dragDropImgActivo.addEventListener('dragleave', e => {
 
 dragDropImgActivo.addEventListener('drop', e => {
     const imagenes = e.dataTransfer.files
-    const listImg = validarFormat(imagenes)
+    listImg = validarFormatImg(imagenes)
     dragDropImgActivo.classList.add('d-none')
     carruselImgActivo.classList.remove('d-none')
-    cargarCarrusel(listImg, carouselIndicators, carouselInner)
+    cargarCarrusel(listImg, eliminarImg, carouselIndicators, carouselInner)
+    localStorage.setItem('listImageActivo', listImg )
     e.preventDefault()
 })
 
-dragDropImgActivo.addEventListener('click', ()=>{
+carruselImgActivo.addEventListener('dblclick',()=>{
     inputActivoImg.click()
 })
 
-inputActivoImg.addEventListener('change', e=>{
-    const imagenes = e.target.files
-    const listImg = validarFormat(imagenes)
-    dragDropImgActivo.classList.add('d-none')
-    carruselImgActivo.classList.remove('d-none')
-    cargarCarrusel(listImg, carouselIndicators, carouselInner)
-})
-
-const eliminarImg =e=>{
-console.log(e.target)
+const abrirImputImagen = ()=>{
+    inputActivoImg.click()
 }
 
-
-function validarFormat(imagenes){
-    const formatValidation= ['image/png', 'image/jpg', 'image/jpeg']
-    let noimgUpload =[]
-    let Imgunload =[]
-    let j=0, k=0
-  
-    for(let i=0; i < imagenes.length; i++){
-   
-        if(!formatValidation.includes(imagenes[i].type)){
-            noimgUpload.push(imagenes[i].name)
-            k=k+1
-            continue
+const creaAgregarImg =  e =>{
+     const imagenes = e.target.files
+    if(typeof listImg !== 'undefined'){
+        if(listImg.length !==0 ){
+            const newimag=validarFormatImg(imagenes)
+            listImg = listImg.concat(newimag)
+        }else{
+            listImg = validarFormatImg(imagenes)
         }
-        Imgunload.push(imagenes[i].path)
-           j=j+1
-        
-    }   
+    }else{
+        listImg = validarFormatImg(imagenes)
+    }
     
-    if(noimgUpload[0]=''){
-        console.log(noimgUpload.length)
-        let names=''
-        noimgUpload.forEach(name =>{
-            names= names +` ${name}, `
-        })
-        alert(`Los formatos de los archivos ${names} no son soportados `, body, divDataActivo, 'alert-danger')
-    }
+    dragDropImgActivo.classList.add('d-none')
+    carruselImgActivo.classList.remove('d-none')
+    cargarCarrusel(listImg, eliminarImg, carouselIndicators, carouselInner)
+    localStorage.setItem('listImageActivo', listImg ) 
+}
 
-    if(Imgunload){
-        if(Imgunload.length > 5){
-            alert(`Solo puede cargar maximo 5 imagenes, solo se cargaran las primeras 5 imagenes cargadas`, body, divDataActivo, 'alert-danger')
+const eliminarImg = e =>{
+   if(!e.target.id){
+    return
+   }
+   const id = parseInt(e.target.id.split('-')[1].trim())
+    const newListImg= listImg.filter((image, index)=>{
+        if( index !== id){
+            return(image)
         }
-    }
+    })
 
-    return(Imgunload)
+    listImg = newListImg
+    if(listImg.length === 0){
+        dragDropImgActivo.classList.remove('d-none','active')
+        
+        carruselImgActivo.classList.add('d-none')
+        return
+    }
+    
+    cargarCarrusel(listImg, eliminarImg, carouselIndicators, carouselInner)
+    localStorage.setItem('listImageActivo', listImg )
 }
