@@ -1,10 +1,13 @@
 const { ipcRenderer } = require('electron')
-const { saveImg } = require('../../bd/google')
+const fs = require('fs')
+const { google } = require('googleapis')
+const path = require('path')
+const {subirImagen} = require('../../../google')
 const { showActivo,
     actualizarActivo,
     crearActivo,
     eliminarActivo } = require('../../bd/bd')
-    const{cargarCarrusel, validarFormatImg} = require('../../helper/cargarImagenActivoCarrusel')
+const { cargarCarrusel, validarFormatImg } = require('../../helper/cargarImagenActivoCarrusel')
 
 const { alert } = require('../../helper/alert')
 
@@ -88,8 +91,9 @@ let tipoActivos
 let estadoActivo
 let usuarios
 let frecuenciaMtto
-let imagenes= []
+let imagenes = []
 // desde menu crear activo
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     const config = JSON.parse(localStorage.getItem('configActivos'))
@@ -182,10 +186,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     })
 
-    dragDropImgActivo.onclick = ()=>{abrirImputImagen()}
-    inputActivoImg.onchange = (e)=>{creaAgregarImg(e)}
+    dragDropImgActivo.onclick = () => { abrirImputImagen() }
+    inputActivoImg.onchange = (e) => { creaAgregarImg(e) }
 
-   await saveImg()
+   await subirImagen()
 })
 
 // drop andrap imagenes
@@ -210,48 +214,48 @@ dragDropImgActivo.addEventListener('drop', e => {
     e.preventDefault()
 })
 
-carruselImgActivo.addEventListener('dblclick',()=>{
+carruselImgActivo.addEventListener('dblclick', () => {
     inputActivoImg.click()
 })
 
-const abrirImputImagen = ()=>{
+const abrirImputImagen = () => {
     inputActivoImg.click()
 }
 
-const creaAgregarImg =  e =>{
-     const newimagenes = e.target.files
-     console.log(newimagenes)
-    if(typeof imagenes !== 'undefined'){
-        if(imagenes.length !==0 ){
-            const newimag=validarFormatImg(newimagenes)
+const creaAgregarImg = e => {
+    const newimagenes = e.target.files
+    console.log(newimagenes)
+    if (typeof imagenes !== 'undefined') {
+        if (imagenes.length !== 0) {
+            const newimag = validarFormatImg(newimagenes)
             imagenes = listImg.concat(newimag)
-        }else{
+        } else {
             imagenes = validarFormatImg(newimagenes)
         }
-    }else{
+    } else {
         imagenes = validarFormatImg(newimagenes)
     }
-    
+
     dragDropImgActivo.classList.add('d-none')
     carruselImgActivo.classList.remove('d-none')
     cargarCarrusel(imagenes, eliminarImg, carouselIndicators, carouselInner)
 }
 
-const eliminarImg = e =>{
-   if(!e.target.id){
-    return
-   }
-   const id = parseInt(e.target.id.split('-')[1].trim())
-    const newListImg= imagenes.filter((image, index)=>{
-        if( index !== id){
-            return(image)
+const eliminarImg = e => {
+    if (!e.target.id) {
+        return
+    }
+    const id = parseInt(e.target.id.split('-')[1].trim())
+    const newListImg = imagenes.filter((image, index) => {
+        if (index !== id) {
+            return (image)
         }
     })
 
     imagenes = newListImg
-    if(imagenes.length === 0){
-        dragDropImgActivo.classList.remove('d-none','active')
-        
+    if (imagenes.length === 0) {
+        dragDropImgActivo.classList.remove('d-none', 'active')
+
         carruselImgActivo.classList.add('d-none')
         return
     }
@@ -305,7 +309,7 @@ buttonCrear.addEventListener('click', async (e) => {
         inputEstadoActivo.classList.add('text-success')
     } else {
         inputEstadoActivo.classList.add('text-danger')
-    } 
+    }
 })
 
 // actualiza los datos del activos seleccionado 
@@ -430,41 +434,41 @@ ipcRenderer.on('activoId', async (e, activoId) => {
     }
     dragDropImgActivo.classList.add('d-none')
     carruselImgActivo.classList.remove('d-none')
-    inputActivoImg.onchange = (e)=>{actualizaImges(e)}
-    
+    inputActivoImg.onchange = (e) => { actualizaImges(e) }
+
     imagenes = activo.url_img.trim().split(',')
     cargarCarrusel(imagenes, eliminarImage, carouselIndicators, carouselInner)
 })
 
-const actualizaImges = e =>{
+const actualizaImges = e => {
     const newimagenes = e.target.files
-     const newimag=validarFormatImg(newimagenes)
-    imagenes = imagenes.concat(newimag) 
+    const newimag = validarFormatImg(newimagenes)
+    imagenes = imagenes.concat(newimag)
     dragDropImgActivo.classList.add('d-none')
     carruselImgActivo.classList.remove('d-none')
     cargarCarrusel(imagenes, eliminarImage, carouselIndicators, carouselInner)
 }
 
-const eliminarImage = e =>{ 
-    if(!e.target.id){
-     return
+const eliminarImage = e => {
+    if (!e.target.id) {
+        return
     }
     const id = parseInt(e.target.id.split('-')[1].trim())
-     const newListImg= imagenes.filter((image, index)=>{
-         if( index !== id){
-             return(image)
-         }
-     })
- 
-     imagenes = newListImg
-     if(imagenes.length === 0){
-         dragDropImgActivo.classList.remove('d-none','active')
-         
-         carruselImgActivo.classList.add('d-none')
-         return
-     }
-     
-     cargarCarrusel(imagenes, eliminarImage, carouselIndicators, carouselInner)
+    const newListImg = imagenes.filter((image, index) => {
+        if (index !== id) {
+            return (image)
+        }
+    })
+
+    imagenes = newListImg
+    if (imagenes.length === 0) {
+        dragDropImgActivo.classList.remove('d-none', 'active')
+
+        carruselImgActivo.classList.add('d-none')
+        return
+    }
+
+    cargarCarrusel(imagenes, eliminarImage, carouselIndicators, carouselInner)
 }
 
 // solcitar mtto
@@ -843,3 +847,4 @@ function validarInput(node, size, name, obligatorio) {
     node.classList.remove('border-danger')
     return (node.value.trim())
 }
+
