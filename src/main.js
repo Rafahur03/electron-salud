@@ -90,7 +90,7 @@ ipcMain.on('openMenu', (e, openMenu) => {
 
         case 'ventanaReporte':
             const ventanaReporte = createWindow(w, h, 'Reportes', 'src/view/reportes/reportes.html', false, false);
-            window.add(ventanaAdmventanaReporteinistracion)
+            window.add(ventanaReporte)
             ventanaReporte.show();
             ventanaReporte.on('close', () => {
                 ventanaReporte.close();
@@ -166,36 +166,6 @@ ipcMain.on('activoId', (e, activoId) => {
     })
      
  
-})
-
-// ////abre ventana fija de confirmacion de eliminar activo
-ipcMain.on('eliminarActivo', (e, activo)=>{
-  
-    let  confirmarEliminarActivo
-    const ventanaIngresoActivo = window.get('ventanaIngresoActivo')
-     if(!window.has(confirmarEliminarActivo)){
-        confirmarEliminarActivo =  createWindowchild(800, 800, 'Datos activos', 'src/view/activos/confirmarEliminarActivo.html', false, false, ventanaIngresoActivo);
-        window.set('confirmarEliminarActivo' ,confirmarEliminarActivo)
-    }      
-    confirmarEliminarActivo.show();
-
-    confirmarEliminarActivo.webContents.on('dom-ready',()=>{
-        confirmarEliminarActivo.webContents.send('eliminarActivo', activo)
-    })
-    
-    ipcMain.on('confirmarEliminar', (e, activo)=>{
-        ventanaIngresoActivo.webContents.send('confirmarEliminar', activo)
-    
-    })  
-
-    ipcMain.on('activoEliminado', (e)=>{
-        confirmarEliminarActivo.close();
-    }) 
-
-    confirmarEliminarActivo.on('close', (e) => {
-        confirmarEliminarActivo.hide();
-        e.preventDefault()
-    })
 })
 
 // solictud de mantenimiento

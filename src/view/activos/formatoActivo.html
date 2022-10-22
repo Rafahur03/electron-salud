@@ -17,7 +17,16 @@
         <div class="p-2"><button type="button" class="btn btn-warning actualizar d-none">Actualizar</button></div>
         <div class="p-2"><button type="button" class="btn btn-secondary solicitar d-none">Solictar Mtto</button></div>
         <div class="p-2"> <button type="button" class="btn btn-primary print d-none">Print</button></div>
-        <div class="p-2 ms-auto"><button type="button" class="btn btn-danger eliminar d-none">Eliminar</button></div>
+        <div class="p-2 ms-auto"><button type="button" class="btn btn-danger eliminar d-none ">Eliminar</button></div>
+    </div>
+    <div class="container-fluid w-75 d-flex mb-3 mt-3 d-none InfoConfirmarELiminar">
+        <h4 class="text-danger">Para confirmar la eliminacion Ingresa el codigo Interno y presiona confirmar</h4>
+        <div class="mx-1 align-items-center">
+            <input type="text" class="form-control d-inline my-3" id="confirmarCodigoInterno">
+            <button type="button" class="btn  btn-danger d-inline mr-3 confirmarEliminar">Confirmar</button>
+            <button type="button" class="btn btn-secondary d-inline cancelarEliminar">Cancelar</button>
+        </div>
+    </div>
     </div>
 
     <div class="container-fluid w-100 m-0 p-0 mb-3 dataActivo">
@@ -33,14 +42,14 @@
                         <span class="fw-bold dragtext">o </span>
                         <span class="fw-bold text-info">Selecciona las imagenes</span>
                         <input type="file" accept=".jpg, .png, .jpeg|image/*" id="inputActivoImg" hidden multiple ">
-                        <span class="text-secondary">Tipo: JPEG, JPG, PNG </span>
+                        <span class=" text-secondary">Tipo: JPEG, JPG, PNG </span>
                     </div>
                     <div id="carruselImgActivo" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-indicators">
-                       
+
                         </div>
                         <div class="carousel-inner">
-                           
+
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carruselImgActivo"
                             data-bs-slide="prev">

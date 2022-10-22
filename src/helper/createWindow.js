@@ -20,17 +20,18 @@ const createWindow = (width, height, title , view, fullscreen, resizable) => {
     return win   
 }
 
-const createWindowchild = (width, height, title , view, fullscreen, resizable, parent) => {
+const createWindowchild = (width, height, title , view, fullscreen, resizable) => {
     const win = new BrowserWindow({
         width,
         height,
-        show: false,
+        show: true,
         title,
         fullscreen,
+        fullscreenable: false,
         resizable,
         minimizable: false,
-        modal: true,
-        parent,
+        maximizable:false,
+        alwaysOnTop: true,
         webPreferences:{
             nodeIntegration: true,
             contextIsolation: false,

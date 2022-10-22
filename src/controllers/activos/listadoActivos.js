@@ -14,7 +14,9 @@ ipcRenderer.on('crudActivo', (e, data)=>{
    if(data.accion === 'crear'){
       crudActivo(tbody, data)
 
-   }else{
+   }else if(data.accion === 'eliminar'){
+      location.reload()
+ }else{
       const idtr =`#act${data.id}` 
       const tr = document.querySelector(idtr)
       crudActivo(tr, data)

@@ -1,8 +1,5 @@
 const { ipcRenderer } = require('electron')
-const fs = require('fs')
-const { google } = require('googleapis')
-const path = require('path')
-const {subirImagen} = require('../../../google')
+const { subirImagen } = require('../../../google')
 const { showActivo,
     actualizarActivo,
     crearActivo,
@@ -18,6 +15,8 @@ const buttonActualizar = document.querySelector('.actualizar')
 const buttonImprimir = document.querySelector('.print')
 const buttonSolicitar = document.querySelector('.solicitar')
 const buttonEliminar = document.querySelector('.eliminar')
+const buttonCancelarEliminar = document.querySelector('.cancelarEliminar')
+const buttonConfirmarEliminar = document.querySelector('.confirmarEliminar')
 const img = document.querySelector('#imgActivo')
 //formulario 
 const form = document.querySelector('form')
@@ -43,7 +42,7 @@ const inputDescripcionActivo = document.querySelector('#descripcionActivo')
 const inputRecomendacionActivo = document.querySelector('#recomendacionActivo')
 const inputObservacionActivo = document.querySelector('#observacionActivo')
 const inputTipoActivo = document.querySelector('#tipoActivo')
-
+const inputconfirmarCodigoInterno = document.querySelector('#confirmarCodigoInterno')
 //label
 
 const labelClasificacionActivo = document.querySelector('.clasificacionActivo')
@@ -67,6 +66,7 @@ const carruselImgActivo = document.querySelector('#carruselImgActivo')
 const carouselInner = document.querySelector('.carousel-inner')
 const carouselIndicators = document.querySelector('.carousel-indicators')
 const dragtext = document.querySelector('.dragtext')
+const divInfoConfirmarELiminar = document.querySelector('.InfoConfirmarELiminar')
 
 
 const tbody = document.querySelector('tbody')
@@ -185,83 +185,83 @@ document.addEventListener('DOMContentLoaded', async () => {
             listaFrecuencia.appendChild(option)
         }
     })
+    // habilitar cuando habilitemos drop an drag
+    //dragDropImgActivo.onclick = () => { abrirImputImagen() }
+    // inputActivoImg.onchange = (e) => { creaAgregarImg(e) }
 
-    dragDropImgActivo.onclick = () => { abrirImputImagen() }
-    inputActivoImg.onchange = (e) => { creaAgregarImg(e) }
 
-   await subirImagen()
 })
+////////////////drop an dag imagen 
+// // drop andrap imagenes
+// dragDropImgActivo.addEventListener('dragover', e => {
+//     dragtext.textContent = 'Suelta para cargar'
+//     dragDropImgActivo.classList.add('active')
+//     e.preventDefault()
+// })
 
-// drop andrap imagenes
-dragDropImgActivo.addEventListener('dragover', e => {
-    dragtext.textContent = 'Suelta para cargar'
-    dragDropImgActivo.classList.add('active')
-    e.preventDefault()
-})
+// dragDropImgActivo.addEventListener('dragleave', e => {
+//     dragtext.textContent = 'Arrastra y suelta'
+//     dragDropImgActivo.classList.remove('active')
+//     e.preventDefault()
+// })
 
-dragDropImgActivo.addEventListener('dragleave', e => {
-    dragtext.textContent = 'Arrastra y suelta'
-    dragDropImgActivo.classList.remove('active')
-    e.preventDefault()
-})
+// dragDropImgActivo.addEventListener('drop', e => {
+//     const newimagenes = e.dataTransfer.files
+//     imagenes = validarFormatImg(newimagenes)
+//     dragDropImgActivo.classList.add('d-none')
+//     carruselImgActivo.classList.remove('d-none')
+//     cargarCarrusel(imagenes, eliminarImg, carouselIndicators, carouselInner)
+//     e.preventDefault()
+// })
 
-dragDropImgActivo.addEventListener('drop', e => {
-    const newimagenes = e.dataTransfer.files
-    imagenes = validarFormatImg(newimagenes)
-    dragDropImgActivo.classList.add('d-none')
-    carruselImgActivo.classList.remove('d-none')
-    cargarCarrusel(imagenes, eliminarImg, carouselIndicators, carouselInner)
-    e.preventDefault()
-})
+// carruselImgActivo.addEventListener('dblclick', () => {
+//     inputActivoImg.click()
+// })
 
-carruselImgActivo.addEventListener('dblclick', () => {
-    inputActivoImg.click()
-})
+// const abrirImputImagen = () => {
+//     inputActivoImg.click()
+// }
 
-const abrirImputImagen = () => {
-    inputActivoImg.click()
-}
+// const creaAgregarImg = e => {
+//     const newimagenes = e.target.files
+//     console.log(newimagenes)
+//     if (typeof imagenes !== 'undefined') {
+//         if (imagenes.length !== 0) {
+//             const newimag = validarFormatImg(newimagenes)
+//             imagenes = listImg.concat(newimag)
+//         } else {
+//             imagenes = validarFormatImg(newimagenes)
+//         }
+//     } else {
+//         imagenes = validarFormatImg(newimagenes)
+//     }
 
-const creaAgregarImg = e => {
-    const newimagenes = e.target.files
-    console.log(newimagenes)
-    if (typeof imagenes !== 'undefined') {
-        if (imagenes.length !== 0) {
-            const newimag = validarFormatImg(newimagenes)
-            imagenes = listImg.concat(newimag)
-        } else {
-            imagenes = validarFormatImg(newimagenes)
-        }
-    } else {
-        imagenes = validarFormatImg(newimagenes)
-    }
+//     dragDropImgActivo.classList.add('d-none')
+//     carruselImgActivo.classList.remove('d-none')
+//     cargarCarrusel(imagenes, eliminarImg, carouselIndicators, carouselInner)
+// }
 
-    dragDropImgActivo.classList.add('d-none')
-    carruselImgActivo.classList.remove('d-none')
-    cargarCarrusel(imagenes, eliminarImg, carouselIndicators, carouselInner)
-}
+// const eliminarImg = e => {
+//     if (!e.target.id) {
+//         return
+//     }
+//     const id = parseInt(e.target.id.split('-')[1].trim())
+//     const newListImg = imagenes.filter((image, index) => {
+//         if (index !== id) {
+//             return (image)
+//         }
+//     })
 
-const eliminarImg = e => {
-    if (!e.target.id) {
-        return
-    }
-    const id = parseInt(e.target.id.split('-')[1].trim())
-    const newListImg = imagenes.filter((image, index) => {
-        if (index !== id) {
-            return (image)
-        }
-    })
+//     imagenes = newListImg
+//     if (imagenes.length === 0) {
+//         dragDropImgActivo.classList.remove('d-none', 'active')
 
-    imagenes = newListImg
-    if (imagenes.length === 0) {
-        dragDropImgActivo.classList.remove('d-none', 'active')
-
-        carruselImgActivo.classList.add('d-none')
-        return
-    }
-    cargarCarrusel(imagenes, eliminarImg, carouselIndicators, carouselInner)
-}
-///////////////////////////////////////////////////////
+//         carruselImgActivo.classList.add('d-none')
+//         return
+//     }
+//     cargarCarrusel(imagenes, eliminarImg, carouselIndicators, carouselInner)
+// }
+///////////////////////////////////////////////////////////
 inputProveedorActivo.addEventListener('change', (e) => {
     const nit = e.target.value.split(' - ')[1]
     typeof nit
@@ -278,6 +278,7 @@ inputProveedorActivo.addEventListener('change', (e) => {
 // crear un nuevo activo
 buttonCrear.addEventListener('click', async (e) => {
     const activo = datos()
+
     if (!activo) {
         return
     }
@@ -287,11 +288,15 @@ buttonCrear.addEventListener('click', async (e) => {
         alert('No fue posible guardar los datos, intentelo mas tarde', body, divDataActivo, 'alert-danger')
         return
     }
+
     inputClasificacionActivos.classList.add('d-none')
     inputIdactivo.classList.remove('d-none')
     form.id = `act${newActivo.id}`
 
     inputIdactivo.value = newActivo.siglas.trim() + newActivo.consecutivo_interno
+    dragDropImgActivo.classList.add('d-none')
+    carruselImgActivo.classList.remove('d-none')
+    cargarCarrusel(activo.url_img, eliminarImage, carouselIndicators, carouselInner)
 
     buttonCrear.classList.add('d-none')
     buttonActualizar.classList.remove('d-none')
@@ -302,13 +307,13 @@ buttonCrear.addEventListener('click', async (e) => {
         id: newActivo.id,
         accion: 'crear'
     }
-    console.log(data)
+
     ipcRenderer.send('crudActivo', data)
     alert('Activo creado correctamente', body, divDataActivo, 'alert-success')
     if (newActivo.estado.trim() === 'Activo') {
         inputEstadoActivo.classList.add('text-success')
     } else {
-        inputEstadoActivo.classList.add('text-danger')
+
     }
 })
 
@@ -335,50 +340,83 @@ buttonActualizar.addEventListener('click', async () => {
 
 // elimina un activo escogido del listado 
 buttonEliminar.addEventListener('click', (e) => {
-    const activo = datos()
-    ipcRenderer.send('eliminarActivo', activo)
+    divInfoConfirmarELiminar.classList.remove('d-none')
 })
 
-ipcRenderer.on('confirmarEliminar', async (e, dataActivo) => {
-    const id = parseInt(dataActivo.id)
-    const resp = await eliminarActivo(id)
+buttonCancelarEliminar.addEventListener('click', (e) => {
+    divInfoConfirmarELiminar.classList.add('d-none')
+})
+
+buttonConfirmarEliminar.addEventListener('click', async (e) => {
+    if (!inputconfirmarCodigoInterno.value || inputconfirmarCodigoInterno.value == '') {
+        return
+    }
+
+    if (inputIdactivo.value.trim() !== inputconfirmarCodigoInterno.value) {
+        alert('El codigo Interno no coresponde al activo que desea eliminar', body, divDataActivo, 'alert-info')
+        return
+    }
+    inputconfirmarCodigoInterno.value=''
+    divInfoConfirmarELiminar.classList.add('d-none')
+    const activo = datos()
+    const resp = await eliminarActivo(activo.id)
     if (resp === 0) {
         alert('No se pudo eliminar el activo, intentalo mas tarde', body, divDataActivo, 'alert-danger')
         return
     }
-    ipcRenderer.send('activoEliminado')
-    dataActivo.accion = 'eliminar'
-    ipcRenderer.send('crudActivo', dataActivo)
+
     alert('Activo Eliminado correctamente correctamente', body, divDataActivo, 'alert-success')
+
+    const dataActivo = {
+        accion: 'eliminar',
+        id: activo.id
+    }
+    ipcRenderer.send('crudActivo', dataActivo)
+
     setTimeout(() => {
-        form.id = ""
-        idactivo.value = ""
-        nombreActivo.value = ""
-        modeloActivo.value = ""
-        marcaActivo.value = ""
-        serieActivo.value = ""
-        procesoActivo.value = ""
-        areaActivo.value = ""
-        ubicacionActivo.value = ""
-        estadoActivo.value = ""
-        fechaCompra.value = ""
-        proveedorActivo.value = ""
-        nitProveedor.value = ""
-        facturaActivo.value = ""
-        valorActivo.value = ""
-        garantiaActivo.value = ""
-        frecuenciaMtto.value = ""
-        ultimoMtto.value = ""
-        proximoMtto.value = ""
-        ingresoActivo.value = ""
-        descripcionActivo.value = ""
-        recomendacionActivo.value = ""
-        observacionActivo.value = ""
-        responsableActivo.value = ""
-        tipoActivo.value = ""
-        tbody.value = ""
-    }, 3000)
+        form.id = ''
+        inputIdactivo.value = ''
+        labelCodigoInterno.classList.add('d-none')
+        inputIdactivo.classList.add('d-none')
+        labelClasificacionActivo.classList.remove('d-none')
+        inputClasificacionActivos.classList.remove('d-none')
+        inputClasificacionActivos.value = ''
+        inputNombreActivo.value = ''
+        inputMarcaActivo.value = ''
+        inputModeloActivo.value = ''
+        inputSerieActivo.value = ''
+        inputProcesoActivo.value = ''
+        inputAreaActivo.value = ''
+        inputUbicacionActivo.value = ''
+        inputResponsableActivo.value = ''
+        inputEstadoActivo.value = ''
+        inputProveedorActivo.value = ''
+        inputNitProveedor.value = ''
+        inputFacturaActivo.value = ''
+        inputValorActivo.value = ''
+        inputFechaCompra.value = ''
+        inputGarantiaActivo.value = ''
+        inputFrecuenciaMtto.value = ''
+        inputDescripcionActivo.value = ''
+        inputRecomendacionActivo.value = ''
+        inputObservacionActivo.value = ''
+        inputTipoActivo.value = ''
+        tbody.innerHTML = ''
+        carouselInner.innerHTM = ''
+        carouselIndicators.innerHTML = ''
+        carruselImgActivo.classList.add('d-none')
+        dragDropImgActivo.classList.remove('d-none')
+        divhistorialMantenimiento.classList.add('d-none')
+        buttonCrear.classList.remove('d-none')
+        buttonActualizar.classList.add('d-none')
+        buttonImprimir.classList.add('d-none')
+        buttonSolicitar.classList.add('d-none')
+        buttonEliminar.classList.add('d-none')
+
+    }, 1500)
+    
 })
+
 
 // desde listado activo
 
@@ -430,8 +468,9 @@ ipcRenderer.on('activoId', async (e, activoId) => {
         inputEstadoActivo.classList.add('text-success')
     } else {
         inputEstadoActivo.classList.add('text-danger')
-        estadinputEstadoActivooActivo.classList.remove('text-success')
+        inputEstadoActivo.classList.remove('text-success')
     }
+    // habilitar cuando habilitemos drop an drag
     dragDropImgActivo.classList.add('d-none')
     carruselImgActivo.classList.remove('d-none')
     inputActivoImg.onchange = (e) => { actualizaImges(e) }
@@ -482,7 +521,6 @@ const datos = () => {
     }
 
     if (inputClasificacionActivos.value) {
-        console.log(1)
         const index = clasificacionActivos.findIndex(item => item.nombre.trim() === inputClasificacionActivos.value.trim())
         if (index !== -1) {
             clasificacion_id = clasificacionActivos[index].id
@@ -814,7 +852,7 @@ const datos = () => {
         tipo_activo_id,
         create_by,
         fecha_creacion,
-        url_img: 'No registra'
+        url_img: ['https://www.lenovo.com/medias/IdeaPad-3-14ITL6-CT1-01-1060x596px.png?context=bWFzdGVyfHJvb3R8MzU3OTAxfGltYWdlL3BuZ3xoZGEvaGJiLzE0Nzg3OTEyMjY5ODU0LnBuZ3xlMGUyY2EzYzc3YjFmZGU5NjlhNTU5ZGFlZGEzYzk1ZjY5ODg3MjY5YjY4YThiZmNiMzJmZWQwMjAwOTAzY2Nl']
     }
     return activo
 }

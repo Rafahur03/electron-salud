@@ -4,21 +4,23 @@ async function cargarlistado(parent){
 
     const listado = await listadoActivos()
     listado.forEach(activo => {
+        if(activo.estado.trim() !=='Eliminado'){
         //falta if para no mostrar los eliminados
-        const items = document.createElement('tr')
-        items.id = `act${activo.id}`
-        items.classList.add('text-center')
-        items.innerHTML=`
-            <td>${activo.siglas.trim()}${activo.consecutivo_interno.trim()}</td>
-            <td>${activo.nombreActivo.trim()}</td>
-            <td>${activo.marca.trim()}</td>
-            <td>${activo.modelo.trim()}</td>
-            <td>${activo.serie.trim()}</td> 
-            <td>${activo.ubicacion.trim()}</td>
-            <td>${activo.nombre.trim()} ${activo.nombre_1.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()}</td>
-            <td>${activo.estado.trim()}</td>
-        `       
-        parent.appendChild(items)
+            const items = document.createElement('tr')
+            items.id = `act${activo.id}`
+            items.classList.add('text-center')
+            items.innerHTML=`
+                <td>${activo.siglas.trim()}${activo.consecutivo_interno.trim()}</td>
+                <td>${activo.nombreActivo.trim()}</td>
+                <td>${activo.marca.trim()}</td>
+                <td>${activo.modelo.trim()}</td>
+                <td>${activo.serie.trim()}</td> 
+                <td>${activo.ubicacion.trim()}</td>
+                <td>${activo.nombre.trim()} ${activo.nombre_1.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()}</td>
+                <td>${activo.estado.trim()}</td>
+            `       
+            parent.appendChild(items)
+        }
     });
 }
 
@@ -27,22 +29,23 @@ async function resultadosActivos(parent){
     const listado = await listadoActivos()
 
     listado.forEach(activo => {
-        //falta if para no mostrar los eliminados
-        const items = document.createElement('div')
-        items.id = `act${activo.id}`
-        items.classList.add('bd-highlight', 'd-block', 'm-1', 'infoActivo')
-        items.innerHTML=`
-            <div class="p-2 d-inline bd-highlight">${activo.siglas.trim()}${activo.consecutivo_interno.trim()}</div>
-            <div class="p-2 d-inline bd-highlight">${activo.nombreActivo.trim()}</div>
-            <div class="p-2 d-inline bd-highlight">${activo.marca.trim()}</div>
-            <div class="p-2 d-inline bd-highlight">${activo.modelo.trim()}</div>
-            <div class="p-2 d-inline bd-highlight">${activo.serie.trim()}</div>
-            <div class="p-2 d-inline bd-highlight">${activo.ubicacion.trim()}</div>
-            <div class="p-2 d-inline bd-highlight">${activo.nombre.trim()} ${activo.nombre_1.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()}</div>
-            <div class="p-2 d-inline bd-highlight">${activo.estado.trim()}</div>
-        `     
-        parent.appendChild(items)
-  
+
+        if(activo.estado.trim() !=='Eliminado'){
+            const items = document.createElement('div')
+            items.id = `act${activo.id}`
+            items.classList.add('bd-highlight', 'd-block', 'm-1', 'infoActivo')
+            items.innerHTML=`
+                <div class="p-2 d-inline bd-highlight">${activo.siglas.trim()}${activo.consecutivo_interno.trim()}</div>
+                <div class="p-2 d-inline bd-highlight">${activo.nombreActivo.trim()}</div>
+                <div class="p-2 d-inline bd-highlight">${activo.marca.trim()}</div>
+                <div class="p-2 d-inline bd-highlight">${activo.modelo.trim()}</div>
+                <div class="p-2 d-inline bd-highlight">${activo.serie.trim()}</div>
+                <div class="p-2 d-inline bd-highlight">${activo.ubicacion.trim()}</div>
+                <div class="p-2 d-inline bd-highlight">${activo.nombre.trim()} ${activo.nombre_1.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()}</div>
+                <div class="p-2 d-inline bd-highlight">${activo.estado.trim()}</div>
+            `     
+            parent.appendChild(items)
+        }
 
     });
 }
@@ -92,5 +95,26 @@ async function crudActivo (parent, activo){
 
 }
 
+async function cargarOptionActivosSolicitud(parent){
+
+    const listado = await listadoActivos()
+
+    listado.forEach(activo => {
+
+        if(activo.estado.trim() !=='Eliminado' && activo.estado.trim() !=='Dado de baja'){
+            const item = document.createElement('option')
+            item.classList.add('bd-highlight', 'd-block', 'm-1', 'infoActivo')
+            item.value =  activo.siglas.trim() + activo.consecutivo_interno.trim()
+            item.textContent = `${activo.siglas.trim()}${activo.consecutivo_interno.trim()} - ${activo.nombreActivo.trim()} - ${activo.marca.trim()} - ${activo.modelo.trim()} - ${activo.serie.trim()} - ${activo.ubicacion.trim()} - ${activo.nombre.trim()} ${activo.nombre_1.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()} - ${activo.estado.trim()}`
+            parent.appendChild(item)
+        }
+
+    });
+}
     
-module.exports ={ cargarlistado, crudActivo, resultadosActivos} 
+module.exports ={
+    cargarlistado,
+    crudActivo,
+    resultadosActivos,
+    cargarOptionActivosSolicitud
+} 

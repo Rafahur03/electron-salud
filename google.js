@@ -30,18 +30,15 @@ async function subirImagen() {
         console.log(file.data.id)
 
         const fileMetaDataImg = {
-            'name': 'snowplace.png',
+            'name': 'snowplace.jpg',
             'parents': [file.data.id]
         }
-        const fd = fs.openSync('D:\\Users\\RJHR\\OneDrive\\Imágenes\\5x7.PNG', 'r')
-        console.log(fd)
         const media = {
-            mimeType: 'image/pmg',
-            body: fs.createReadStream('D:\\Users\\RJHR\\OneDrive\\Imágenes\\5x7.PNG')
+            mimeType: 'image/jpg',
+            body: fs.createReadStream('D:\\Users\\RJHR\\OneDrive\\Imágenes\\ataraxia coffe-bar.jpg')
         }
 
-        console.log(media)
-        const response = await driveService.files.create({
+       const response = await driveService.files.create({
             resource: fileMetaDataImg,
             media: media,
             field: 'id'
@@ -54,7 +51,7 @@ async function subirImagen() {
     }
 }
 
-
+//subirImagen()
 
 
 module.exports = { subirImagen }
