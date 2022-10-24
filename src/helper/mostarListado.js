@@ -1,4 +1,4 @@
-const{listadoActivos, actualizarListado} = require('../bd/bd')
+const{listadoActivos, actualizarListado, consultarSolicitudesActivo} = require('../bd/bd')
 
 async function cargarlistado(parent){
 
@@ -103,9 +103,35 @@ async function cargarOptionActivosSolicitud(parent){
 
         if(activo.estado.trim() !=='Eliminado' && activo.estado.trim() !=='Dado de baja'){
             const item = document.createElement('option')
-            item.classList.add('bd-highlight', 'd-block', 'm-1', 'infoActivo')
-            item.value =  activo.siglas.trim() + activo.consecutivo_interno.trim()
+            item.classList.add('bd-highlight', 'd-block', 'm-1')
+            item.value =  activo.id
             item.textContent = `${activo.siglas.trim()}${activo.consecutivo_interno.trim()} - ${activo.nombreActivo.trim()} - ${activo.marca.trim()} - ${activo.modelo.trim()} - ${activo.serie.trim()} - ${activo.ubicacion.trim()} - ${activo.nombre.trim()} ${activo.nombre_1.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()} - ${activo.estado.trim()}`
+            parent.appendChild(item)
+        }
+
+    });
+}
+
+async function cargarOptionSolcitudes(parent, id){
+    let listado
+    if(id){
+        listado = await consultarSolicitudesActivo(id)
+        console.log(listado)
+     
+    }else{
+        listado = await consultarSolicitudesActivo()
+    }
+    
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+      }
+    listado.forEach(solicitud => {
+
+        if(solicitud.estado.trim() !=='Eliminada'){
+            const item = document.createElement('option')
+            item.classList.add('bd-highlight', 'd-block', 'm-1')
+            item.value =  solicitud.id
+            item.textContent = `${solicitud.siglas.trim()}${solicitud.consecutivo_interno} - ${solicitud.nombre.trim()} ${solicitud.nombre_1.trim()} ${solicitud.apellido.trim()} ${solicitud.apellido_1.trim()} - ${solicitud.estado.trim()}`
             parent.appendChild(item)
         }
 
@@ -116,5 +142,6 @@ module.exports ={
     cargarlistado,
     crudActivo,
     resultadosActivos,
-    cargarOptionActivosSolicitud
+    cargarOptionActivosSolicitud,
+    cargarOptionSolcitudes
 } 

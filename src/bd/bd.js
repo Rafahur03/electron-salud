@@ -190,7 +190,7 @@ const guardarSolicitudSoporte = async (solicitud) => {
 
 
     const nuevaSolicitud = await pool.query(`INSERT INTO solicitudes_mtto(id_activo, id_usuario, fecha_solicitud, solicitud, img_solicitud)
-    VALUES('${solicitud. id_activo}', '${solicitud.id_user}','${solicitud.fecha_solicitud}','${solicitud.solictud}','${solicitud.ima_solictud}')
+    VALUES('${solicitud.id_activo}', '${solicitud.id_user}','${solicitud.fecha_solicitud}','${solicitud.solictud}','${solicitud.ima_solictud}')
     
     SELECT IDENT_CURRENT('solicitudes_mtto') AS id`)
     return (nuevaSolicitud.recordset[0])
@@ -199,9 +199,9 @@ const guardarSolicitudSoporte = async (solicitud) => {
 
 /// busca activo para solicitudees
 
-const activoSolicitudes = async (data) => {
+const activoSolicitudes = async (id) => {
     const pool = await db()
-    const resultado = await pool.query(`SELECT la.id, ca.siglas, la.consecutivo_interno,la.nombre as nombreActivo , ma.marca, la.modelo, la.serie, pr.proceso, ar.area, la.ubicacion, us.nombre, us.nombre_1, us.apellido, us.apellido_1, es.estado, url_img
+    const resultado = await pool.query(`SELECT la.id, ca.siglas, la.consecutivo_interno,la.nombre as nombreActivo , ma.marca, la.modelo, la.serie, pr.proceso, ar.area, la.ubicacion, us.nombre, us.nombre_1, us.apellido, us.apellido_1, es.estado, url_img, ta.tipo_activo
 	FROM listado_activos la
     INNER JOIN clasificacion_activos ca
         on la.clasificacion_id =ca.id
@@ -215,7 +215,9 @@ const activoSolicitudes = async (data) => {
         on la.proceso_id = pr.id
     INNER JOIN usuarios us
         on la.usuario_id = us.id
-    WHERE la.clasificacion_id ='${data.clasificacion}' AND la.consecutivo_interno = ${data.codigoInterno} AND la.estado_id = '1'`)
+    INNER JOIN tipo_activo ta
+        on la.tipo_activo_id = ta.id
+    WHERE la.id ='${id}' AND la.estado_id = '1'`)
     return (resultado.recordset[0])
 }
 
@@ -224,6 +226,51 @@ const eliminarSolicitud = async (id) => {
     const resultado = await pool.query(`UPDATE solicitudes_mtto SET id_estado='4' WHERE id ='${id}'`)
     return (resultado.rowsAffected[0])
 }
+
+const consultarSolicitudesActivo = async (id) => {
+    const pool = await db()
+    if (id) {
+        const resultado = await pool.query(`SELECT sm.id, ca.siglas, la.consecutivo_interno, sm.solicitud, sm.img_solicitud, es.estado, us.nombre, us.nombre_1, us.apellido, us.apellido_1
+        FROM solicitudes_mtto sm
+        INNER JOIN estado_solicitudes es
+        ON es.id = sm.id_estado
+        INNER JOIN usuarios us
+        ON us.id = sm.id_usuario
+        INNER JOIN listado_activos la
+        ON la.id = sm.id_activo
+        INNER JOIN clasificacion_activos ca
+        ON la.clasificacion_id = ca.id
+        WHERE sm.id_activo='${id}' and sm.id_estado !='4'`)
+
+        return (resultado.recordset)
+
+
+    } else {
+        const resultado = await pool.query(`SELECT sm.id, ca.siglas, la.consecutivo_interno, sm.solicitud, sm.img_solicitud, es.estado, us.nombre, us.nombre_1, us.apellido, us.apellido_1
+        FROM solicitudes_mtto sm
+        INNER JOIN estado_solicitudes es
+        ON es.id = sm.id_estado
+        INNER JOIN usuarios us
+        ON us.id = sm.id_usuario
+        INNER JOIN listado_activos la
+        ON la.id = sm.id_activo
+        INNER JOIN clasificacion_activos ca
+        ON la.clasificacion_id = ca.id`)
+
+        return (resultado.recordset)
+
+    }
+}
+const consultarSolicitud = async id => {
+    const pool = await db()
+    const resultado = await pool.query(`SELECT sm.id, sm.id_activo, sm.solicitud, sm.img_solicitud, es.estado, sm.fecha_solicitud
+	FROM solicitudes_mtto sm
+	INNER JOIN estado_solicitudes es
+	ON es.id = sm.id_estado
+	WHERE sm.id='${id}' and sm.id_estado !='4'`)
+    return (resultado.recordset[0])
+}
+
 
 module.exports = {
     usuario,
@@ -236,5 +283,7 @@ module.exports = {
     eliminarActivo,
     guardarSolicitudSoporte,
     activoSolicitudes,
-    eliminarSolicitud
+    eliminarSolicitud,
+    consultarSolicitudesActivo,
+    consultarSolicitud
 }

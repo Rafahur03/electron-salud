@@ -1,7 +1,6 @@
 const { activoSolicitudes, guardarSolicitudSoporte, eliminarSolicitud } = require('../../bd/bd')
 const { cargarOptionActivosSolicitud } = require('../../helper/mostarListado')
 const { letterUppercase } = require('../../helper/upperCase')
-
 const { alert } = require('../../helper/alert')
 
 const buttonCrear = document.querySelector('.crear')
@@ -30,6 +29,7 @@ const imputFechaSolicitud = document.querySelector('#fechaSolicitud')
 const imputUsuarioSolicitud = document.querySelector('#usuarioSolicitud')
 const inputIdSolicitud = document.querySelector('#idSolicitud')
 const inputConfirmarCodigoInterno = document.querySelector('#confirmarCodigoInterno')
+const inputIdActivo = document.querySelector('#idActivo')
 
 //labels
 const labelFechaSolicitud = document.querySelector('.fechaSolicitud')
@@ -51,24 +51,31 @@ document.addEventListener('DOMContentLoaded', async () => {
     await cargarOptionActivosSolicitud(listActivos)
 })
 
-inputCodigoInterno.addEventListener('keyup', (e) => {
+inputIdActivo.addEventListener('keyup', (e) => {
 
     if (activo) {
-        if (primercodigo === inputCodigoInterno.value.trim()) {
+        if (primercodigo === inputIdActivo.value.trim()) {
             return
         }
-        primercodigo = inputCodigoInterno.value.trim()
+        primercodigo = inputIdActivo.value.trim()
     } else {
-        primercodigo = inputCodigoInterno.value.trim()
+        primercodigo = inputIdActivo.value.trim()
 
     }
     letterUppercase(e)
     clearTimeout(timeout)
     timeout = setTimeout(() => {
-        consultarACtivo()
+        consultarACtivo(primercodigo)
         clearTimeout(timeout)
     }, 1500)
 
+})
+
+inputIdActivo.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        const valor = inputIdActivo.value.trim()
+        consultarACtivo(valor)
+    }
 })
 
 inputdescripcionSolicitud.addEventListener('keyup', e => {
@@ -95,16 +102,15 @@ inputdescripcionSolicitud.addEventListener('keyup', e => {
     }
 })
 
-inputCodigoInterno.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') {
-        consultarACtivo()
-    }
-})
 
 buttonCrear.addEventListener('click', async () => {
 
     if (inputdescripcionSolicitud.value.trim() == '') {
         alert('Debe ingresar una solicitud', divDataActivo, form, 'alert-danger')
+        return
+    }
+    if (inputdescripcionSolicitud.value.trim().length > 1000) {
+        alert('La descripcion de la solicitud supera los 1000 caracteres', divDataActivo, form, 'alert-danger')
         return
     }
     const date = Date.now()
@@ -118,7 +124,7 @@ buttonCrear.addEventListener('click', async () => {
         ima_solictud: 'https://4ddig.tenorshare.com/es/images/otros/documentos/word-danado.webp?w=715&h=450'
     }
     const res = await guardarSolicitudSoporte(solicitud)
-    if(!res.id){
+    if (!res.id) {
         alert('No se pudo guardar su solicitud favor intentelo mas tarde', divDataActivo, form, 'alert-danger')
         return
     }
@@ -126,8 +132,9 @@ buttonCrear.addEventListener('click', async () => {
     imputUsuarioSolicitud.classList.remove('d-none')
     labelFechaSolicitud.classList.remove('d-none')
     labelUsuarioSolicitud.classList.remove('d-none')
-    imputFechaSolicitud.value = solicitud.fecha_solicitud
-    if (activo.nombre_1 === '') {
+    const fecha = new Date(solicitud.fecha_solicitud)
+    imputFechaSolicitud.value = fecha.toLocaleString()
+        if (activo.nombre_1 === '') {
         imputUsuarioSolicitud.value = `${user.nombre.trim()} ${user.apellido.trim()} ${user.apellido_1.trim()}`
     } else {
         imputUsuarioSolicitud.value = `${user.nombre.trim()} ${user.nombre_1.trim()} ${user.apellido.trim()} ${user.apellido_1.trim()}`
@@ -139,6 +146,9 @@ buttonCrear.addEventListener('click', async () => {
     buttonnuevaSolicitud.classList.remove('d-none')
     buttoneliminar.classList.remove('d-none')
     inputdescripcionSolicitud.readOnly = true
+    inputIdActivo.readOnly=true
+    alert('Solictud creada exitosamente', divDataActivo, form, 'alert-success')
+    return
 
 })
 
@@ -150,6 +160,11 @@ buttonnuevaSolicitud.addEventListener('click', () => {
     labelFechaSolicitud.classList.add('d-none')
     labelUsuarioSolicitud.classList.add('d-none')
     pcaracteressolicitud.textContent = 'Maximo 1000 caracteres'
+    buttonCrear.classList.remove('d-none')
+    buttonImprimir.classList.add('d-none')
+    buttonnuevaSolicitud.classList.add('d-none')
+    buttoneliminar.classList.add('d-none')
+    inputIdActivo.readOnly=false
 
 })
 
@@ -164,8 +179,8 @@ buttonConfirmarEliminar.addEventListener('click', async () => {
     if (!inputConfirmarCodigoInterno) {
         return
     }
-    if (inputConfirmarCodigoInterno.value ==='') {
-  
+    if (inputConfirmarCodigoInterno.value === '') {
+
         return
     }
 
@@ -174,11 +189,11 @@ buttonConfirmarEliminar.addEventListener('click', async () => {
         return
     }
     const res = await eliminarSolicitud(id)
-    if(res!== 1){
+    if (res !== 1) {
         alert('No se pudo eliminar la solictud contacte con soporte', divDataActivo, form, 'alert-danger')
         return
     }
-    console.log((res))
+
     form.reset()
     divIdSolicitud.classList.add('d-none')
     imputFechaSolicitud.classList.add('d-none')
@@ -186,10 +201,10 @@ buttonConfirmarEliminar.addEventListener('click', async () => {
     labelFechaSolicitud.classList.add('d-none')
     labelUsuarioSolicitud.classList.add('d-none')
     divConfirmarCodigoInterno.classList.add('d-none')
-    buttonCrear.classList.add('d-none')
-    buttonImprimir.classList.remove('d-none')
-    buttonnuevaSolicitud.classList.remove('d-none')
-    buttoneliminar.classList.remove('d-none')
+    buttonCrear.classList.remove('d-none')
+    buttonImprimir.classList.add('d-none')
+    buttonnuevaSolicitud.classList.add('d-none')
+    buttoneliminar.classList.add('d-none')
     pcaracteressolicitud.textContent = 'Maximo 1000 caracteres'
 
     alert('La solicitud ha sido eliminada correctamete.', divDataActivo, form, 'alert-success')
@@ -199,75 +214,58 @@ buttonCancelarEliminar.addEventListener('click', () => {
     divConfirmarCodigoInterno.classList.add('d-none')
 })
 
-async function consultarACtivo() {
-    if (inputCodigoInterno.value) {
-        let codigo = inputCodigoInterno.value.trim()
+async function consultarACtivo(valor) {
 
-        if (codigo === '') {
-            inputdescripcionSolicitud.readOnly = true
-            return
-        }
-        codigo = codigo.match(/[a-z]+|[^a-z]+/gi).join(" ").replace(/\s+/g, " ").split(' ')
 
-        const config = JSON.parse(localStorage.getItem('configActivos'))
-        const clasificacionActivos = config[0]
-        const index = clasificacionActivos.findIndex(item => item.siglas.trim() === codigo[0])
-        if (index === -1) {
-            resetactivo()
-            return
-        }
-        let data = {}
-        data.clasificacion = clasificacionActivos[index].id
-
-        if (!codigo[1]) {
-            resetactivo()
-            return
-        }
-
-        if (codigo[1].length < 4 || codigo[1].length > 4) {
-            resetactivo()
-            return
-        }
-
-        data.codigoInterno = codigo[1]
-        // consulta a la base de datos
-
-        activo = await activoSolicitudes(data)
-        if (!activo) {
-            resetactivo()
-            return
-        }
-
-        inputModeloActivo.value = activo.modelo.trim();
-        inputAreaActivo.value = activo.area.trim()
-        inputNombreActivo.value = activo.nombreActivo.trim()
-        inputSerieActivo.value = activo.serie.trim()
-        inputUbicacionActivo.value = activo.ubicacion.trim()
-        inputMarcaActivo.value = activo.marca.trim()
-        inputProcesoActivo.value = activo.proceso
-        inputEstadoActivo.value = activo.estado.trim()
-        if (activo.nombre_1 === '') {
-            inputResponsable.value = `${activo.nombre.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()}`
-        } else {
-            inputResponsable.value = `${activo.nombre.trim()} ${activo.nombre_1.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()}`
-        }
-        inputdescripcionSolicitud.readOnly = false
+    if (valor === '') {
+        resetactivo()
+        return
     }
+    const regex = /^[0-9]*$/;
+    const onlyNumbers = regex.test(valor)
+    if (!onlyNumbers) {
+        resetactivo()
+        return
+    }
+    const id = parseInt(valor)
+
+    activo = await activoSolicitudes(id)
+    if (!activo) {
+        resetactivo()
+        return
+    }
+    inputCodigoInterno.value = activo.siglas.trim() + activo.consecutivo_interno
+    inputModeloActivo.value = activo.modelo.trim();
+    inputAreaActivo.value = activo.area.trim()
+    inputNombreActivo.value = activo.nombreActivo.trim()
+    inputSerieActivo.value = activo.serie.trim()
+    inputUbicacionActivo.value = activo.ubicacion.trim()
+    inputMarcaActivo.value = activo.marca.trim()
+    inputProcesoActivo.value = activo.proceso
+    inputEstadoActivo.value = activo.estado.trim()
+    if (activo.nombre_1 === '') {
+        inputResponsable.value = `${activo.nombre.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()}`
+    } else {
+        inputResponsable.value = `${activo.nombre.trim()} ${activo.nombre_1.trim()} ${activo.apellido.trim()} ${activo.apellido_1.trim()}`
+    }
+    inputdescripcionSolicitud.readOnly = false
+
 }
 
 const resetactivo = () => {
 
     alert('El activo que intenta buscar no existe', divDataActivo, form, 'alert-danger')
+
+    inputCodigoInterno.value = ""
+    inputModeloActivo.value = ''
+    inputAreaActivo.value = ''
+    inputNombreActivo.value = ''
+    inputSerieActivo.value = ''
+    inputUbicacionActivo.value = ''
+    inputMarcaActivo.value = ''
+    inputProcesoActivo.value = ''
+    inputEstadoActivo.value = ''
+    inputResponsable.value = ''
     inputdescripcionSolicitud.readOnly = true
-    if (inputNombreActivo) {
-        inputModeloActivo.value = ''
-        inputAreaActivo.value = ''
-        inputNombreActivo.value = ''
-        inputSerieActivo.value = ''
-        inputUbicacionActivo.value = ''
-        inputMarcaActivo.value = ''
-        inputProcesoActivo.value = ''
-        inputEstadoActivo.value = ''
-        inputResponsable.value = ''
-    }
+
 }
