@@ -1,4 +1,7 @@
-const{listadoActivos, actualizarListado, consultarSolicitudesActivo} = require('../bd/bd')
+const{listadoActivos,
+     actualizarListado,
+      consultarSolicitudesActivo,
+      consultarReporteMantenimiento} = require('../bd/bd')
 
 async function cargarlistado(parent){
 
@@ -115,9 +118,7 @@ async function cargarOptionActivosSolicitud(parent){
 async function cargarOptionSolcitudes(parent, id){
     let listado
     if(id){
-        listado = await consultarSolicitudesActivo(id)
-        console.log(listado)
-     
+        listado = await consultarSolicitudesActivo(id)   
     }else{
         listado = await consultarSolicitudesActivo()
     }
@@ -137,11 +138,34 @@ async function cargarOptionSolcitudes(parent, id){
 
     });
 }
-    
+
+async function cargarOptionrReporte(parent, id){
+    let listado
+    if(id){
+        listado = await consultarReporteMantenimiento(id)   
+    }else{
+        listado = await consultarReporteMantenimiento()
+    }
+    while (parent.firstChild) {
+        parent.removeChild(parent.firstChild);
+      }
+    listado.forEach(reporte => {
+       
+            const item = document.createElement('option')
+            item.classList.add('bd-highlight', 'd-block', 'm-1')
+            item.value =  reporte.id
+            item.textContent = `${reporte.siglas.trim()}${reporte.consecutivo_interno} ${reporte.nombre.trim()} ${reporte.tipoMtto.trim()} ${reporte.fechareporte.toLocaleString('en-GB')} ${reporte.razon_social} ${reporte.usuarioReporte}   `
+            parent.appendChild(item)
+        
+
+    });
+}
+   
 module.exports ={
     cargarlistado,
     crudActivo,
     resultadosActivos,
     cargarOptionActivosSolicitud,
-    cargarOptionSolcitudes
+    cargarOptionSolcitudes,
+    cargarOptionrReporte
 } 

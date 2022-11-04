@@ -81,7 +81,6 @@ inputIdSolicitud.addEventListener('keyup', (e) => {
 
 const cargarActivo = async (valor) => {
     if (valor === '') {
-        console.log('1')
         resetSolictud()
         resetActivo()
         return
@@ -92,23 +91,18 @@ const cargarActivo = async (valor) => {
     if (!onlyNumbers) {
         alert('El dato debe ser un id valido', divDataActivo, form, 'alert-danger')
         resetActivo()
-        resetActivo()
-        console.log('2')
+        resetSolictud()
         return
     }
     const id = parseInt(valor)
-    console.log(id)
 
     activo = await activoSolicitudes(id)
     if (!activo) {
         alert('El activo que intenta buscar no existe', divDataActivo, form, 'alert-danger')
         resetActivo()
-        resetActivo()
-        console.log('3')
-        return
+        resetSolictud()
+       return
     }
-
-    console.log(activo)
 
     inputCodigoInterno.value = activo.siglas.trim() + activo.consecutivo_interno
     inputAreaActivo.value = activo.area.trim()
@@ -165,23 +159,19 @@ const cargarSolicitud = async (valor) => {
         return
     }
     const id = parseInt(valor)
-    console.log(id)
-
+ 
     solicitud = await consultarSolicitud(id)
 
     if (!solicitud) {
         resetSolictud()
         alert('La solicitud que intenta buscar no existe', divDataActivo, form, 'alert-danger')
-        console.log('3')
         return
     }
-    console.log(solicitud)
     const data = new Date(solicitud.fecha_solicitud)
     inputFechaSolicitud.value = data.toLocaleString('en-GB')
-    inputEstadoSolicitud.value = solicitud.estado
+    inputEstadoSolicitud.value = solicitud.idEstado  + ' ' + solicitud.estado.trim()
     inputDescripcionSolicitud.value =solicitud.solicitud
 
-    console.log(activo)
     if(inputidactivo.value === solicitud.id_activo){
         return
     }

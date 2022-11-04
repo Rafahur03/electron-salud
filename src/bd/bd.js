@@ -43,7 +43,10 @@ const dataConfActivo = async () => {
         SELECT * FROM tipo_activo
         SELECT * FROM estados
         SELECT id, nombre, nombre_1, apellido, apellido_1 FROM usuarios
-        SELECT * FROM frecuencia_Mtto`
+        SELECT * FROM frecuencia_Mtto
+        SELECT * FROM estado_solicitudes
+        SELECT * FROM tipo_mantenimeintos`
+
     )
     return (resultado.recordsets)
 }
@@ -263,13 +266,136 @@ const consultarSolicitudesActivo = async (id) => {
 }
 const consultarSolicitud = async id => {
     const pool = await db()
-    const resultado = await pool.query(`SELECT sm.id, sm.id_activo, sm.solicitud, sm.img_solicitud, es.estado, sm.fecha_solicitud
+    const resultado = await pool.query(`SELECT sm.id, sm.id_activo, sm.solicitud, sm.img_solicitud, es.id AS idEstado, es.estado, sm.fecha_solicitud
 	FROM solicitudes_mtto sm
 	INNER JOIN estado_solicitudes es
 	ON es.id = sm.id_estado
 	WHERE sm.id='${id}' and sm.id_estado !='4'`)
     return (resultado.recordset[0])
 }
+
+// reporte de matenimiento 
+const crearReporte = async reporte => {
+    const pool = await db()
+    console.log(reporte)
+    try {
+        const resultado = await pool.query(`INSERT INTO repotesMtto(solicitud_id, tipoMtoo_id, fechareporte, costo_mo, costo_mp, proveedor_id, usuario_idReporte, usuario_idaprovado, hallazgos, reporte, recomendaciones)
+        VALUES('${reporte.solicitud_id}','${reporte.tipoMtoo_id}','${reporte.fechareporte}', '${reporte.costo_mo}', '${reporte.costo_mp}', '${reporte.proveedor_id}', '${reporte.usuario_idReporte}', '${reporte.usuario_idaprovado}','${reporte.hallazgos}', '${reporte.reporte}', '${reporte.recomendaciones}')
+        SELECT IDENT_CURRENT('repotesMtto') AS id`)
+
+        const idReporte = resultado.recordset[0]
+
+        const actualizarSolictud = await pool.query(`UPDATE solicitudes_mtto SET id_estado ='${reporte.estado}' WHERE id ='${reporte.solicitud_id}'`)
+
+        return (idReporte)
+    } catch (error) {
+        return ('err')
+    }
+
+}
+
+const consultarReporteMantenimiento = async (id) => {
+    const pool = await db()
+    if (id) {
+        const resultado = await pool.query(`SELECT rm.id, cla.siglas,li.consecutivo_interno, li.nombre, tm.tipoMtto, rm.fechareporte, rm.costo_mo, rm.costo_mp, rm.proveedor_id, pro.razon_social, rm.usuario_idReporte ,CONCAT(us.nombre, ' ', us.nombre_1, ' ', us.apellido, ' ', us.apellido_1) AS usuarioReporte FROM repotesMtto rm
+       INNER JOIN tipo_mantenimeintos tm
+       ON  tm.id = rm.tipoMtoo_id
+       INNER JOIN proveedores pro
+       ON  pro.id = rm.proveedor_id
+       INNER JOIN usuarios as us
+       ON us.id = rm.usuario_idReporte
+       INNER JOIN usuarios as usua
+       ON usua.id = rm.usuario_idaprovado
+       INNER JOIN solicitudes_mtto as so
+       ON so.id = rm.solicitud_id
+       INNER JOIN listado_activos as li
+       ON so.id_activo = li.id
+       INNER JOIN clasificacion_activos as cla
+       ON cla.id = li.clasificacion_id
+       WHERE li.id = '${id}'`)
+
+        return (resultado.recordset)
+
+
+    } else {
+        const resultado = await pool.query(`SELECT rm.id, cla.siglas,li.consecutivo_interno, li.nombre, tm.tipoMtto, rm.fechareporte, rm.costo_mo, rm.costo_mp, rm.proveedor_id, pro.razon_social, rm.usuario_idReporte ,CONCAT(us.nombre, ' ', us.nombre_1, ' ', us.apellido, ' ', us.apellido_1) AS usuarioReporte FROM repotesMtto rm
+        INNER JOIN tipo_mantenimeintos tm
+        ON  tm.id = rm.tipoMtoo_id
+        INNER JOIN proveedores pro
+        ON  pro.id = rm.proveedor_id
+        INNER JOIN usuarios as us
+        ON us.id = rm.usuario_idReporte
+        INNER JOIN usuarios as usua
+        ON usua.id = rm.usuario_idaprovado
+        INNER JOIN solicitudes_mtto as so
+        ON so.id = rm.solicitud_id
+        INNER JOIN listado_activos as li
+        ON so.id_activo = li.id
+        INNER JOIN clasificacion_activos as cla
+        ON cla.id = li.clasificacion_id`)
+
+        return (resultado.recordset)
+
+    }
+}
+
+const consultarReporte = async id => {
+    const pool = await db()
+    const resultado = await pool.query(`SELECT rm.id, li.id as idactivo, rm.solicitud_id, rm.tipoMtoo_id, tm.tipoMtto, rm.fechareporte, rm.costo_mo, rm.costo_mp, rm.proveedor_id, pro.razon_social, rm.usuario_idReporte ,CONCAT(us.nombre, ' ', us.nombre_1, ' ', us.apellido, ' ', us.apellido_1) AS usuarioReporte, rm.usuario_idaprovado, CONCAT(usua.nombre, ' ', usua.nombre_1, ' ', usua.apellido, ' ', usua.apellido_1) AS usuarioRecibido, rm.hallazgos, rm.reporte, rm.recomendaciones FROM repotesMtto rm
+    INNER JOIN tipo_mantenimeintos tm
+    ON  tm.id = rm.tipoMtoo_id
+    INNER JOIN proveedores pro
+    ON  pro.id = rm.proveedor_id
+    INNER JOIN usuarios as us
+    ON us.id = rm.usuario_idReporte
+    INNER JOIN usuarios as usua
+    ON usua.id = rm.usuario_idaprovado
+    INNER JOIN solicitudes_mtto as so
+    ON so.id = rm.solicitud_id
+    INNER JOIN listado_activos as li
+    ON so.id_activo = li.id
+    INNER JOIN clasificacion_activos as cla
+    ON cla.id = li.clasificacion_id
+    WHERE rm.id = '${id}'`)
+    return (resultado.recordset[0])
+}
+const consultarReporteBySolicitudid = async id => {
+    const pool = await db()
+    const resultado = await pool.query(`SELECT rm.id, li.id as idactivo, rm.solicitud_id, rm.tipoMtoo_id, tm.tipoMtto, rm.fechareporte, rm.costo_mo, rm.costo_mp, rm.proveedor_id, pro.razon_social, rm.usuario_idReporte ,CONCAT(us.nombre, ' ', us.nombre_1, ' ', us.apellido, ' ', us.apellido_1) AS usuarioReporte, rm.usuario_idaprovado, CONCAT(usua.nombre, ' ', usua.nombre_1, ' ', usua.apellido, ' ', usua.apellido_1) AS usuarioRecibido, rm.hallazgos, rm.reporte, rm.recomendaciones FROM repotesMtto rm
+        INNER JOIN tipo_mantenimeintos tm
+        ON  tm.id = rm.tipoMtoo_id
+        INNER JOIN proveedores pro
+        ON  pro.id = rm.proveedor_id
+        INNER JOIN usuarios as us
+        ON us.id = rm.usuario_idReporte
+        INNER JOIN usuarios as usua
+        ON usua.id = rm.usuario_idaprovado
+        INNER JOIN solicitudes_mtto as so
+        ON so.id = rm.solicitud_id
+        INNER JOIN listado_activos as li
+        ON so.id_activo = li.id
+        INNER JOIN clasificacion_activos as cla
+        ON cla.id = li.clasificacion_id
+        WHERE  rm.solicitud_id = '${id}'`)
+    return (resultado)
+
+}
+
+const actualizarReporte = async reporte => {
+    const pool = await db()
+
+    try {
+        const resultado = await pool.query(`UPDATE repotesMtto SET tipoMtoo_id ='${reporte.tipoMtoo_id}', fechareporte='${reporte.fechareporte}', costo_mo='${reporte.costo_mo}', costo_mp='${reporte.costo_mp}', proveedor_id='${reporte.proveedor_id}', usuario_idReporte='${reporte.usuario_idReporte}', usuario_idaprovado='${reporte.usuario_idaprovado}', hallazgos='${reporte.hallazgos}', reporte='${reporte.reporte}', recomendaciones='${reporte.recomendaciones}'
+        WHERE id ='${reporte.id}'`)
+
+        const actualizarSolictud = await pool.query(`UPDATE solicitudes_mtto SET id_estado ='${reporte.estado}' WHERE id ='${reporte.solicitud_id}'`)
+      
+        return (reporte.id)
+    } catch (error) {
+        return ('err')
+    }
+}
+
 
 
 module.exports = {
@@ -285,5 +411,10 @@ module.exports = {
     activoSolicitudes,
     eliminarSolicitud,
     consultarSolicitudesActivo,
-    consultarSolicitud
+    consultarSolicitud,
+    crearReporte,
+    consultarReporteMantenimiento,
+    consultarReporte,
+    consultarReporteBySolicitudid,
+    actualizarReporte
 }

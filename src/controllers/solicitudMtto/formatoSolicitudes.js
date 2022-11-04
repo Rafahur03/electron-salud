@@ -1,7 +1,9 @@
 const { activoSolicitudes, guardarSolicitudSoporte, eliminarSolicitud } = require('../../bd/bd')
 const { cargarOptionActivosSolicitud } = require('../../helper/mostarListado')
 const { letterUppercase } = require('../../helper/upperCase')
+const { maxCaracteres } = require('../../helper/maxCarracteres')
 const { alert } = require('../../helper/alert')
+
 
 const buttonCrear = document.querySelector('.crear')
 const buttonImprimir = document.querySelector('.print')
@@ -45,7 +47,6 @@ const divConfirmarCodigoInterno = document.querySelector('.infoConfirmarELiminar
 let timeout
 let activo
 let primercodigo
-let valueParrafo
 
 document.addEventListener('DOMContentLoaded', async () => {
     await cargarOptionActivosSolicitud(listActivos)
@@ -79,27 +80,8 @@ inputIdActivo.addEventListener('keypress', function (e) {
 })
 
 inputdescripcionSolicitud.addEventListener('keyup', e => {
-    const largo = e.target.value.length
-
-    if (largo === 0) {
-        pcaracteressolicitud.textContent = 'Maximo 1000 caracteres'
-        return
-    }
-
-    if (largo === 1000) {
-        valueParrafo = e.target.value
-        pcaracteressolicitud.textContent = 'Quedan 0 caracteres de 1000'
-        return
-    }
-
-    if (largo < 1000) {
-        pcaracteressolicitud.textContent = `Quedan ${1000 - e.target.value.length} caracteres de 1000`
-        return
-    }
-
-    if (largo > 1000) {
-        inputdescripcionSolicitud.value = valueParrafo
-    }
+    maxCaracteres(e, pcaracteressolicitud, 1000)
+ 
 })
 
 

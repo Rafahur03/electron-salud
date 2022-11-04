@@ -89,12 +89,17 @@ ipcMain.on('openMenu', (e, openMenu) => {
             break;
 
         case 'ventanaReporte':
-            const ventanaReporte = createWindow(w, h, 'Reportes', 'src/view/reportes/reportes.html', false, false);
-            window.add(ventanaReporte)
+            let ventanaReporte
+            if(!window.has(ventanaReporte)){
+                ventanaReporte = createWindow(w, h, 'Reportes', 'src/view/reportes/reportes.html', false, false);
+                window.set('ventanaReporte' ,ventanaReporte)
+            }  
+            
             ventanaReporte.show();
             ventanaReporte.on('close', () => {
                 ventanaReporte.close();
             })
+            
             break;
 
         case 'ventanaEncuesta':
@@ -193,7 +198,7 @@ ipcMain.on('ventanaSolicitudMtto', (e, activo)=>{
 })
 
 // consultar Mtto
-ipcMain.on('ventanaConsultarMtto', (e, activo)=>{
+ipcMain.on('ventanaConsultarMtto', (e)=>{
     let ventanaConsultarMtto
     if(!window.get('ventanaConsultarMtto')){
         ventanaConsultarMtto = createWindow(width, height, 'Consultar reporte de Mtto', 'src/view/solicitudesMtto/consultaReporte.html', false, false);
@@ -203,5 +208,18 @@ ipcMain.on('ventanaConsultarMtto', (e, activo)=>{
     ventanaConsultarMtto.on('close', (e)=>{
         ventanaConsultarMtto.close()
        
+    })
+})
+
+ipcMain.on('realizarReporte', (e)=>{
+    let realizarReporte
+    if(!window.get('realizaReporte')){
+        realizarReporte = createWindow(width, height, 'Consultar reporte de Mtto', 'src/view/reportes/formatoReporte.html', false, false);
+        window.set('realizarReporte',realizarReporte )
+    }
+    realizarReporte.show();
+
+    realizarReporte.on('close', (e)=>{
+        realizarReporte.close()   
     })
 })

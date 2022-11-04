@@ -20,7 +20,6 @@ ipcRenderer.on('userData', async (e, userData)=>{
 })
 
 menuAdministracion.addEventListener('click',()=>{ 
-    console.log('hola')
     openMenu = 'ventanaAdministracion'
     ipcRenderer.send('openMenu',openMenu)
 })
