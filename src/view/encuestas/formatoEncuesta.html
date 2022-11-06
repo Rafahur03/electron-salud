@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../style/css/bootstrap.min.css">
+    <title>Encuestas</title>
+</head>
+
+<body>
+    <div class="container container-fluid w-75 rounded-3 shadow-lg p-3 mb-5 bg-body dataEncuesta">
+        <h4 class=" text-center fw-bold text-secondary">ENCUESTA DE SATISFACCION DE SERVICIO RECIBIDO POR EL AREA DE
+            MANTENIMIENTO</h4>
+        <h6 class=" text-center fw-bold text-secondary">Por favor responda las siguientes preguntas con una calificacion
+            de 1 a 5 suendo La calificación más baja es 1 la calificación más alta es 5
+        </h6>
+        <form class=" d-flex flex-row justify-content-evenly">
+            <div>
+                <div class="">
+                    <label for="idSolicitud" class="fw-bold">Solicitud</label>
+                    <input type="text" class="form-control my-1" id="idSolicitud" list="listSolicitud">
+                    <datalist id="listSolicitud">
+                    </datalist>
+                </div>
+                <div class="">
+                    <label for="idReporte" class="fw-bold">Reporte</label>
+                    <input type="text" class="form-control my-1" id="idReporte" list="listReporte">
+                    <datalist id="listReporte">
+                    </datalist>
+                </div>
+                <div class="">
+                    <label for="codigoInterno" class="fw-bold">Codigo</label>
+                    <input type="text" class="form-control my-1" id="codigoInterno" readonly>
+                </div>
+                <div class="">
+                    <label for="nombreActivo" class="fw-bold">Nombre</label>
+                    <input type="text" class="form-control my-1" id="nombreActivo" readonly>
+                </div>
+                <div class="">
+                    <label for="fechaSolicitud" class="fw-bold">Fecha Solicitud</label>
+                    <input type="datetime" class="form-control my-1" id="fechaSolicitud" readonly>
+                </div>
+                <div class="">
+                    <label for="fechaReporte" class="fw-bold">Fecha Reporte</label>
+                    <input type="datetime" class="form-control my-1" id="fechaReporte" readonly>
+                </div>
+                <div class="">
+                    <label for="estado" class=" fw-bold">Estado</label>
+                    <input type="text" class="form-control my-1" id="estado" readonly>
+                </div>
+            </div>
+            <div class="">
+                <div class="my-1">
+                    <label for="pregunta1" class=" fw-bold">1. El soporte fue brindado en un tiempo oportuno</label>
+                    <select class="form-select w-50" aria-label="select pregunta1" id="pregunta1" disabled>
+                        <option value="0" selected>Seleccione una opcion</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <label for="textPregunta1" class=" fw-bold mt-1 d-block">Cual es el motivo de su respuesta</label>
+                    <textarea class="form-control" id="comentarioPregunta1" rows="2" readonly></textarea>
+                </div>
+                <div class="my-1 pregunta2">
+                    <label for="pregunta2" class=" fw-bold">2. Se le dio solución definitiva al problema
+                        reportado</label>
+                    <select class="form-select w-50" aria-label="select pregunta2" id="pregunta2" disabled>
+                        <option value="0" selected>Seleccione una opcion</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <label for="textPregunta1" class=" fw-bold mt-1 d-block">Cual es el motivo de su respuesta</label>
+                    <textarea class="form-control" id="comentarioPregunta2" rows="2" readonly></textarea>
+                </div>
+                <div class="pregunta3 my-1">
+                    <label for="pregunta3" class="my-2 fw-bold">3. Le dieron recomendaciones en el caso</label>
+                    <select class="form-select w-50" aria-label="select pregunta3" id="pregunta3" disabled>
+                        <option value="0" selected>Seleccione una opcion</option>
+                        <option value="1">Si</option>
+                        <option value="2">No</option>
+                    </select>
+                </div>
+                <div class=" my-1 pregunta4">
+                    <label for="pregunta4" class="my-2 fw-bold">4. Cómo califica las recomendaciones dadas en el
+                        caso</label>
+                    <select class="form-select w-50" aria-label="select pregunta4" id="pregunta4" disabled>
+                        <option value="0" selected>Seleccione una opcion</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <label for="textPregunta1" class=" fw-bold mt-1 d-block">Cual es el motivo de su respuesta</label>
+                    <textarea class="form-control" id="comentarioPregunta4" rows="2" readonly></textarea>
+                </div>
+                <div class="pregunta5">
+                    <label for="pregunta5" class="my-2 fw-bold">5 Cómo califica la atención recibida (Amabilidad,
+                        Generosidad, Actitud)</label>
+                    <select class="form-select w-50" aria-label="Default select pregunta5" id="pregunta5" disabled>
+                        <option value="0" selected>Seleccione una opcion</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                    <label for="textPregunta1" class=" fw-bold mt-1 d-block">Cual es el motivo de su respuesta</label>
+                    <textarea class="form-control" id="comentarioPregunta5" rows="2" readonly></textarea>
+                </div>
+                <div class="p-2 mt-1">
+                    <button type="button" class="btn btn-success enviar">Enviar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script type="module" src="../../style/js/jquery-1.8.3.min.js"></script>
+<script type="module" src="../../style/js/bootstrap.min.js"></script>
+<script type="module" src="../../controllers/encuestas/formatoEncuesta.js"></script>
+
+</html>

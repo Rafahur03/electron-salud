@@ -389,13 +389,86 @@ const actualizarReporte = async reporte => {
         WHERE id ='${reporte.id}'`)
 
         const actualizarSolictud = await pool.query(`UPDATE solicitudes_mtto SET id_estado ='${reporte.estado}' WHERE id ='${reporte.solicitud_id}'`)
-      
+
         return (reporte.id)
     } catch (error) {
         return ('err')
     }
 }
 
+const consultarListadoreporte = async (id, donde) => {
+    const pool = await db()
+
+    try {
+        if (donde === 'solicitud') {
+            const resultado = await pool.query(`SELECT ca.siglas, li.consecutivo_interno, li.nombre, sm.id AS solicitudid, rm.id AS reporteID, sm.fecha_solicitud, rm.fechareporte, sm.id_estado, es.estado FROM repotesMtto rm
+                INNER JOIN solicitudes_mtto sm
+                    ON sm.id = rm.solicitud_id
+                INNER JOIN listado_activos li
+                    ON li.id = sm.id_activo
+                INNER JOIN clasificacion_activos ca
+                    ON ca.id = li.clasificacion_id
+                INNER JOIN usuarios us
+                    ON us.id = li.clasificacion_id
+                INNER JOIN estado_solicitudes es
+                    ON es.id = sm.id_estado
+                LEFT JOIN encuesta en ON rm.solicitud_id = en.id_solicitud
+            WHERE en.id_solicitud IS NULL AND sm.id = '${id}'`)
+            return (resultado.recordset[0])
+        }
+
+        if (id) {
+
+            const resultado = await pool.query(`SELECT ca.siglas, li.consecutivo_interno, li.nombre, sm.id AS solicitudid, rm.id AS reporteID, sm.fecha_solicitud, rm.fechareporte, sm.id_estado, es.estado FROM repotesMtto rm
+                INNER JOIN solicitudes_mtto sm
+                    ON sm.id = rm.solicitud_id
+                INNER JOIN listado_activos li
+                    ON li.id = sm.id_activo
+                INNER JOIN clasificacion_activos ca
+                    ON ca.id = li.clasificacion_id
+                INNER JOIN usuarios us
+                    ON us.id = li.clasificacion_id
+                INNER JOIN estado_solicitudes es
+                    ON es.id = sm.id_estado
+                LEFT JOIN encuesta en ON rm.solicitud_id = en.id_solicitud
+            WHERE en.id_solicitud IS NULL AND rm.id = '${id}'`)
+
+            return (resultado.recordset[0])
+        }
+
+        const resultado = await pool.query(`SELECT ca.siglas, li.consecutivo_interno, li.nombre, sm.id AS solicitudid, rm.id AS reporteID, sm.fecha_solicitud, rm.fechareporte FROM repotesMtto rm
+            INNER JOIN solicitudes_mtto sm
+                ON sm.id = rm.solicitud_id
+            INNER JOIN listado_activos li
+                ON li.id = sm.id_activo
+            INNER JOIN clasificacion_activos ca
+                ON ca.id = li.clasificacion_id
+            INNER JOIN usuarios us
+                ON us.id = li.clasificacion_id
+            LEFT JOIN encuesta en ON rm.solicitud_id = en.id_solicitud
+	    WHERE en.id_solicitud IS NULL`)
+
+        return (resultado.recordset)
+    } catch (error) {
+        return ('err')
+    }
+}
+
+const guardarEncuesta = async (respuestas) => {
+    const pool = await db()
+
+    try {
+        const nuevaSolicitud = await pool.query(`INSERT INTO encuesta (id_solicitud, oportunidad, solucion, recomendacion, c_recomendacion, atencion, fecha, co_oportunidad, co_solucion, co_recomendaciones, co_atencion)
+    VALUES('${respuestas.id_solicitud}', '${respuestas.pregunta1}', '${respuestas.pregunta2}', '${respuestas.pregunta3}', '${respuestas.pregunta4}', '${respuestas.pregunta5}', '${respuestas.fecha}', '${respuestas.comentarioPregunta1}', '${respuestas.comentarioPregunta2}', '${respuestas.comentarioPregunta4}', '${respuestas.comentarioPregunta5}')
+    SELECT IDENT_CURRENT('encuesta') AS id`)
+        return (nuevaSolicitud.recordset[0])
+    } catch (error) {
+        console.log(error)
+        return ('err')
+    }
+
+
+}
 
 
 module.exports = {
@@ -416,5 +489,7 @@ module.exports = {
     consultarReporteMantenimiento,
     consultarReporte,
     consultarReporteBySolicitudid,
-    actualizarReporte
+    actualizarReporte,
+    consultarListadoreporte,
+    guardarEncuesta
 }

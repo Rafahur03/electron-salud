@@ -1,7 +1,8 @@
 const{listadoActivos,
      actualizarListado,
       consultarSolicitudesActivo,
-      consultarReporteMantenimiento} = require('../bd/bd')
+      consultarReporteMantenimiento,
+       consultarListadoreporte} = require('../bd/bd')
 
 async function cargarlistado(parent){
 
@@ -160,6 +161,28 @@ async function cargarOptionrReporte(parent, id){
 
     });
 }
+
+async function cargarOpcionesEncuestas(parentsolicitud, parentreporte){
+
+    const listado = await consultarListadoreporte()
+   
+    listado.forEach(reporte => {
+        
+            const itemSolicitud = document.createElement('option')
+            const itemReporte = document.createElement('option')
+            itemSolicitud.classList.add('bd-highlight', 'd-block', 'm-1')
+            itemSolicitud.value =  reporte.solicitudid
+            itemSolicitud.textContent = `${reporte.siglas.trim()}${reporte.consecutivo_interno} - ${reporte.nombre.trim()} - ${reporte.fecha_solicitud.toLocaleString('en-GB')} - ${reporte.fechareporte.toLocaleString('en-GB')}`
+            parentsolicitud.appendChild(itemSolicitud)
+
+            itemReporte.classList.add('bd-highlight', 'd-block', 'm-1')
+            itemReporte.value =  reporte.reporteID
+            itemReporte.textContent = `${reporte.siglas.trim()}${reporte.consecutivo_interno} - ${reporte.nombre.trim()} - ${reporte.fecha_solicitud.toLocaleString('en-GB')} - ${reporte.fechareporte.toLocaleString('en-GB')}`
+            parentreporte.appendChild(itemReporte)
+        
+
+    });
+}
    
 module.exports ={
     cargarlistado,
@@ -167,5 +190,6 @@ module.exports ={
     resultadosActivos,
     cargarOptionActivosSolicitud,
     cargarOptionSolcitudes,
-    cargarOptionrReporte
+    cargarOptionrReporte,
+    cargarOpcionesEncuestas
 } 

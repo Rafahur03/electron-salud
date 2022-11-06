@@ -103,8 +103,13 @@ ipcMain.on('openMenu', (e, openMenu) => {
             break;
 
         case 'ventanaEncuesta':
-            const ventanaEncuesta = createWindow(w, h, 'Encuestas', 'src/view/encuestas/encuestas.html', false, false);
-            window.add(ventanaEncuesta)
+         
+            let ventanaEncuesta
+            if(!window.has(ventanaEncuesta)){
+                ventanaEncuesta = createWindow(w, h, 'Encuesta', 'src/view/encuestas/encuestas.html', false, false);
+                window.set('ventanaEncuesta' ,ventanaEncuesta)
+            }  
+            
             ventanaEncuesta.show();
             ventanaEncuesta.on('close', () => {
                 ventanaEncuesta.close();
@@ -206,7 +211,8 @@ ipcMain.on('ventanaConsultarMtto', (e)=>{
     ventanaConsultarMtto.show();
 
     ventanaConsultarMtto.on('close', (e)=>{
-        ventanaConsultarMtto.close()
+        ventanaConsultarMtto.hide()
+        e.preventDefault()
        
     })
 })
@@ -220,6 +226,21 @@ ipcMain.on('realizarReporte', (e)=>{
     realizarReporte.show();
 
     realizarReporte.on('close', (e)=>{
-        realizarReporte.close()   
+        realizarReporte.hide()
+        e.preventDefault()   
+    })
+})
+
+ipcMain.on('encuesta', (e)=>{
+    let encuesta
+    if(!window.get('encuesta')){
+        encuesta = createWindow(width, height, 'Encuesta', 'src/view/encuestas/formatoEncuesta.html', false, false);
+        window.set('encuesta',encuesta )
+    }
+    encuesta.show();
+
+    encuesta.on('close', (e)=>{
+        encuesta.hide()
+        e.preventDefault()   
     })
 })
