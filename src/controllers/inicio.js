@@ -48,9 +48,3 @@ menuEstadistica.addEventListener('click', ()=>{
     openMenu = 'ventanaEstadistica'
     ipcRenderer.send('openMenu',openMenu)
 })
-
-menuEstadistica.addEventListener('click', ()=>{
-    const openMenu ='ventanaIngresoActivo'
- 
-    ipcRenderer.send('openMenu',openMenu)
-})

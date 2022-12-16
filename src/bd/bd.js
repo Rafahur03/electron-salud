@@ -220,7 +220,7 @@ const activoSolicitudes = async (id) => {
         on la.usuario_id = us.id
     INNER JOIN tipo_activo ta
         on la.tipo_activo_id = ta.id
-    WHERE la.id ='${id}' AND la.estado_id = '1'`)
+    WHERE la.id ='${id}' AND la.estado_id != '3'`)
     return (resultado.recordset[0])
 }
 
@@ -312,7 +312,8 @@ const consultarReporteMantenimiento = async (id) => {
        ON so.id_activo = li.id
        INNER JOIN clasificacion_activos as cla
        ON cla.id = li.clasificacion_id
-       WHERE li.id = '${id}'`)
+       WHERE li.id = '${id}'
+       ORDER BY rm.id `)
 
         return (resultado.recordset)
 
@@ -332,7 +333,8 @@ const consultarReporteMantenimiento = async (id) => {
         INNER JOIN listado_activos as li
         ON so.id_activo = li.id
         INNER JOIN clasificacion_activos as cla
-        ON cla.id = li.clasificacion_id`)
+        ON cla.id = li.clasificacion_id
+        ORDER BY rm.id `)
 
         return (resultado.recordset)
 
@@ -467,6 +469,25 @@ const guardarEncuesta = async (respuestas) => {
         return ('err')
     }
 
+}
+
+const consultarEstadisticaOportunidad = async (fehcaInicial, FechaFinal) =>{
+    const pool = await db()
+
+    try {
+        const resultado = await pool.query(`SELECT  ca.siglas ,la.consecutivo_interno, ca.nombre, fecha_solicitud, rm.fechareporte FROM repotesMtto AS rm 
+        INNER JOIN solicitudes_mtto AS SO
+            ON rm.solicitud_id = so.id
+        INNER JOIN listado_activos AS la
+            ON so.id_activo = la.id
+        INNER JOIN clasificacion_activos AS ca
+            ON la.clasificacion_id = ca.id
+        ORDER BY ca.siglas, rm.fechareporte DESC`)
+        return (resultado.recordset)
+    } catch (error) {
+        console.log(error)
+        return ('err')
+    }
 
 }
 
@@ -491,5 +512,6 @@ module.exports = {
     consultarReporteBySolicitudid,
     actualizarReporte,
     consultarListadoreporte,
-    guardarEncuesta
+    guardarEncuesta,
+    consultarEstadisticaOportunidad
 }

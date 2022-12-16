@@ -123,7 +123,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await cargarOptionrReporte(listReporte)
 })
 
-
 buttonCrear.addEventListener('click', async () => {
     const reporte = datos('crear')
     const idReporte = await crearReporte(reporte)
@@ -164,7 +163,6 @@ inputidactivo.addEventListener('keyup', (e) => {
     cargarActivo(idActivoanterior)
 })
 
-
 inputIdSolicitud.addEventListener('keyup', (e) => {
     letterUppercase(e)
     const regex = /^[0-9]*$/
@@ -175,7 +173,7 @@ inputIdSolicitud.addEventListener('keyup', (e) => {
     }
 
     if (e.key !== 'Enter') return
-    console.log('first')
+
     if (solicitud) {
         if (idSolictudAnterior === inputIdSolicitud.value.trim()) {
             return
@@ -211,16 +209,17 @@ inputidReporte.addEventListener('keyup', (e) => {
 
     cargarReporte(idReporteAnterior)
 })
- 
 
 descripcionHallazgos.addEventListener('keyup', (e) => {
     maxCaracteres(e, caracteresHallazgos, 1000 )
 
 })
+
 descripcionReporte.addEventListener('keyup', (e) => {
     maxCaracteres(e, caracteresReporte, 1000 )
 
 })
+
 recomendaciones.addEventListener('keyup', (e) => {
     maxCaracteres(e, caracteresRecomendacion, 1000)
 

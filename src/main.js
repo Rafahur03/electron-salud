@@ -232,15 +232,28 @@ ipcMain.on('realizarReporte', (e)=>{
 })
 
 ipcMain.on('encuesta', (e)=>{
-    let encuesta
-    if(!window.get('encuesta')){
-        encuesta = createWindow(width, height, 'Encuesta', 'src/view/encuestas/formatoEncuesta.html', false, false);
-        window.set('encuesta',encuesta )
-    }
-    encuesta.show();
 
-    encuesta.on('close', (e)=>{
-        encuesta.hide()
-        e.preventDefault()   
-    })
+    const encuesta = createWindow(width, height, 'Encuesta', 'src/view/encuestas/formatoEncuesta.html', false, false);
+    encuesta.show();
+})
+
+ipcMain.on('indicadorOportunidad', (e)=>{
+    const indicadorOportunidad = createWindow(width, height, 'indicadorOportunidad', 'src/view/estadisticas/indicadorOportunidad.html', false, false);
+ 
+    indicadorOportunidad.show();
+})
+
+ipcMain.on('indicadorFallas', (e)=>{
+
+    const indicadorFallas = createWindow(width, height, 'indicadorFallas', 'src/view/estadisticas/indicadorFallas.html', false, false);
+
+    indicadorFallas.show();
+
+})
+
+ipcMain.on('indicadorCostos', (e)=>{
+  
+    const indicadorCostos = createWindow(width, height, 'indicadorCostos', 'src/view/estadisticas/indicadorCostos.html', false, false);
+    indicadorCostos.show();
+
 })
