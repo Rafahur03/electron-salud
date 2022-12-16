@@ -1,3 +1,4 @@
+
 const { app, screen, ipcMain, BrowserWindow, ipcRendererInternal} = require('electron')
 const { createWindow, createWindowchild } = require('./helper/createWindow')
 const { default: electronReload } = require('electron-reload');

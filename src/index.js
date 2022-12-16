@@ -1,3 +1,4 @@
+
 const { ipcRenderer } = require('electron')
 const { alert } = require('./helper/alert')
 const {usuario, config} = require('./bd/bd')

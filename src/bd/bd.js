@@ -18,6 +18,7 @@ const config = {
 }
 
 const db = async () => {
+
     try {
         const pool = await sql.connect(config);
         return pool;
@@ -27,9 +28,15 @@ const db = async () => {
 };
 
 const usuario = async id => {
-    const pool = await db()
-    const resultado = await pool.query(`select id, nombre, nombre_1, apellido, apellido_1, password from Usuarios where numero_id = ${id}`)
-    return (resultado.recordset[0])
+
+    try {
+        const pool = await db()
+        const resultado = await pool.query(`SELECT id, nombre, nombre_1, apellido, apellido_1, password FROM Usuarios WHERE numero_id = ${id}`)
+        return (resultado.recordset[0])   
+    } catch (error) {
+        console.error(error);
+    }
+    
 }
 
 const dataConfActivo = async () => {
