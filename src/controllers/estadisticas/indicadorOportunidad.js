@@ -3,7 +3,6 @@ const {consultarEstadisticaOportunidad}  = require('../../bd/bd.js')
  
 document.addEventListener('DOMContentLoaded', async()=>{
     const oportunidad = await consultarEstadisticaOportunidad()
-	console.log(oportunidad)
     let data = {}
 	
     oportunidad.forEach(reporte => {
@@ -1153,19 +1152,19 @@ document.addEventListener('DOMContentLoaded', async()=>{
 	}
 	if(!isNaN(data.eneroIn1)){
 		dataEnero[5]= data.eneroIn1Suma/data.eneroIn1
-		labelEnero[5] = "EMA"
+		labelEnero[5] = "IN0001"
 	}
 	if(!isNaN(data.eneroIn2)){
 		dataEnero[6]= data.eneroIn2Suma/data.eneroIn2
-		labelEnero[6] = "EMA"
+		labelEnero[6] = "IN0002"
 	}
 	if(!isNaN(data.eneroIn3)){
 		dataEnero[7]= data.eneroIn3Suma/data.eneroIn3
-		labelEnero[7] = "EMA"
+		labelEnero[7] = "IN0003"
 	}
 	if(!isNaN(data.eneroIn4)){
 		dataEnero[8]= data.eneroIn4Suma/data.eneroIn4
-		labelEnero[8] = "EMA"
+		labelEnero[8] = "IN0004"
 	}
 
 	const dataFebrero=[]
@@ -1192,19 +1191,19 @@ document.addEventListener('DOMContentLoaded', async()=>{
 	}
 	if(!isNaN(data.febreroIn1)){
 		dataFebrero[5]= data.febreroIn1Suma/data.febreroIn1
-		labelFebrero[5] = "EMA"
+		labelFebrero[5] = "IN0001"
 	}
 	if(!isNaN(data.febreroIn2)){
 		dataFebrero[6]= data.febreroIn2Suma/data.febreroIn2
-		labelFebrero[6] = "EMA"
+		labelFebrero[6] = "IN0002"
 	}
 	if(!isNaN(data.febreroIn3)){
 		dataFebrero[7]= data.febreroIn3Suma/data.febreroIn3
-		labelFebrero[7] = "EMA"
+		labelFebrero[7] = "IN0003"
 	}
 	if(!isNaN(data.febreroIn4)){
 		dataFebrero[8]= data.febreroIn4Suma/data.febreroIn4
-		labelFebrero[8] = "EMA"
+		labelFebrero[8] = "IN0004"
 	}
 
 	const dataMarzo=[]
@@ -1231,19 +1230,19 @@ document.addEventListener('DOMContentLoaded', async()=>{
 	}
 	if(!isNaN(data.marzoIn1)){
 		dataMarzo[5]= data.marzoIn1Suma/data.marzoIn1
-		labelMarzo[5] = "EMA"
+		labelMarzo[5] = "IN0001"
 	}
 	if(!isNaN(data.marzoIn2)){
 		dataMarzo[6]= data.marzoIn2Suma/data.marzoIn2
-		labelMarzo[6] = "EMA"
+		labelMarzo[6] = "IN0002"
 	}
 	if(!isNaN(data.marzoIn3)){
 		dataMarzo[7]= data.marzoIn3Suma/data.marzoIn3
-		labelMarzo[7] = "EMA"
+		labelMarzo[7] = "IN0003"
 	}
 	if(!isNaN(data.marzoIn4)){
 		dataMarzo[8]= data.marzoIn4Suma/data.marzoIn4
-		labelMarzo[8] = "EMA"
+		labelMarzo[8] = "IN0004"
 	}
 
 	const dataAbril=[]
@@ -1270,23 +1269,358 @@ document.addEventListener('DOMContentLoaded', async()=>{
 	}
 	if(!isNaN(data.abrilIn1)){
 		dataAbril[5]= data.abrilIn1Suma/data.abrilIn1
-		labelAbril[5] = "EMA"
+		labelAbril[5] = "IN0001"
 	}
 	if(!isNaN(data.abrilIn2)){
 		dataAbril[6]= data.abrilIn2Suma/data.abrilIn2
-		labelAbril[6] = "EMA"
+		labelAbril[6] = "IN0002"
 	}
 	if(!isNaN(data.abrilIn3)){
 		dataAbril[7]= data.abrilIn3Suma/data.abrilIn3
-		labelAbril[7] = "EMA"
+		labelAbril[7] = "IN0003"
 	}
 	if(!isNaN(data.abrilIn4)){
 		dataAbril[8]= data.abrilIn4Suma/data.abrilIn4
-		labelAbril[8] = "EMA"
+		labelAbril[8] = "IN0004"
 	}
 
-	console.log(dataEnero, labelEnero)
+	const dataMayo=[]
+	const labelMayo=[]
+	if(!isNaN(data.mayoEac)){
+		dataMayo[0]= data.mayoEacSuma/data.mayoEac
+		labelMayo[0] = "EAC"
+	}
+	if(!isNaN(data.mayoEag)){
+		dataMayo[1]= data.mayoEagSuma/data.mayoEag
+		labelMayo[1] = "EAG"
+	}
+	if(!isNaN(data.mayoEc)){
+		dataMayo[2]= data.mayoEcSuma/data.mayoEc
+		labelMayo[2] = "EC"
+	}
+	if(!isNaN(data.mayoEm)){
+		dataMayo[3]= data.mayoEmSuma/data.mayoEm
+		labelMayo[3] = "EM"
+	}
+	if(!isNaN(data.mayoEma)){
+		dataMayo[4]= data.mayoEmaSuma/data.mayoEma
+		labelMayo[4] = "EMA"
+	}
+	if(!isNaN(data.mayoIn1)){
+		dataMayo[5]= data.mayoIn1Suma/data.mayoIn1
+		labelMayo[5] = "IN0001"
+	}
+	if(!isNaN(data.mayoIn2)){
+		dataMayo[6]= data.mayoIn2Suma/data.mayoIn2
+		labelMayo[6] = "IN0002"
+	}
+	if(!isNaN(data.mayoIn3)){
+		dataMayo[7]= data.mayoIn3Suma/data.mayoIn3
+		labelMayo[7] = "IN0003"
+	}
+	if(!isNaN(data.mayoIn4)){
+		dataMayo[8]= data.mayoIn4Suma/data.mayoIn4
+		labelMayo[8] = "IN0004"
+	}
 	
+	const dataJunio=[]
+	const labelJunio=[]
+	if(!isNaN(data.junioEac)){
+		dataJunio[0]= data.junioEacSuma/data.junioEac
+		labelJunio[0] = "EAC"
+	}
+	if(!isNaN(data.junioEag)){
+		dataJunio[1]= data.junioEagSuma/data.junioEag
+		labelJunio[1] = "EAG"
+	}
+	if(!isNaN(data.junioEc)){
+		dataJunio[2]= data.junioEcSuma/data.junioEc
+		labelJunio[2] = "EC"
+	}
+	if(!isNaN(data.junioEm)){
+		dataJunio[3]= data.junioEmSuma/data.junioEm
+		labelJunio[3] = "EM"
+	}
+	if(!isNaN(data.junioEma)){
+		dataJunio[4]= data.junioEmaSuma/data.junioEma
+		labelJunio[4] = "EMA"
+	}
+	if(!isNaN(data.junioIn1)){
+		dataJunio[5]= data.junioIn1Suma/data.junioIn1
+		labelJunio[5] = "IN0001"
+	}
+	if(!isNaN(data.junioIn2)){
+		dataJunio[6]= data.junioIn2Suma/data.junioIn2
+		labelJunio[6] = "IN0002"
+	}
+	if(!isNaN(data.junioIn3)){
+		dataJunio[7]= data.junioIn3Suma/data.junioIn3
+		labelJunio[7] = "IN0003"
+	}
+	if(!isNaN(data.junioIn4)){
+		dataJunio[8]= data.junioIn4Suma/data.junioIn4
+		labelJunio[8] = "IN0004"
+	}
+
+	const dataJulio=[]
+	const labelJulio=[]
+	if(!isNaN(data.julioEac)){
+		dataJulio[0]= data.julioEacSuma/data.julioEac
+		labelJulio[0] = "EAC"
+	}
+	if(!isNaN(data.julioEag)){
+		dataJulio[1]= data.julioEagSuma/data.julioEag
+		labelJulio[1] = "EAG"
+	}
+	if(!isNaN(data.julioEc)){
+		dataJulio[2]= data.julioEcSuma/data.julioEc
+		labelJulio[2] = "EC"
+	}
+	if(!isNaN(data.julioEm)){
+		dataJulio[3]= data.julioEmSuma/data.julioEm
+		labelJulio[3] = "EM"
+	}
+	if(!isNaN(data.julioEma)){
+		dataJulio[4]= data.julioEmaSuma/data.julioEma
+		labelJulio[4] = "EMA"
+	}
+	if(!isNaN(data.julioIn1)){
+		dataJulio[5]= data.julioIn1Suma/data.julioIn1
+		labelJulio[5] = "IN0001"
+	}
+	if(!isNaN(data.julioIn2)){
+		dataJulio[6]= data.julioIn2Suma/data.julioIn2
+		labelJulio[6] = "IN0002"
+	}
+	if(!isNaN(data.julioIn3)){
+		dataJulio[7]= data.julioIn3Suma/data.julioIn3
+		labelJulio[7] = "IN0003"
+	}
+	if(!isNaN(data.julioIn4)){
+		dataJulio[8]= data.julioIn4Suma/data.julioIn4
+		labelJulio[8] = "IN0004"
+	}
+
+	const dataAgosto=[]
+	const labelAgosto=[]
+	if(!isNaN(data.agostoEac)){
+		dataAgosto[0]= data.agostoEacSuma/data.agostoEac
+		labelAgosto[0] = "EAC"
+	}
+	if(!isNaN(data.agostoEag)){
+		dataAgosto[1]= data.agostoEagSuma/data.agostoEag
+		labelAgosto[1] = "EAG"
+	}
+	if(!isNaN(data.agostoEc)){
+		dataAgosto[2]= data.agostoEcSuma/data.agostoEc
+		labelAgosto[2] = "EC"
+	}
+	if(!isNaN(data.agostoEm)){
+		dataAgosto[3]= data.agostoEmSuma/data.agostoEm
+		labelAgosto[3] = "EM"
+	}
+	if(!isNaN(data.agostoEma)){
+		dataAgosto[4]= data.agostoEmaSuma/data.agostoEma
+		labelAgosto[4] = "EMA"
+	}
+	if(!isNaN(data.agostoIn1)){
+		dataAgosto[5]= data.agostoIn1Suma/data.agostoIn1
+		labelAgosto[5] = "IN0001"
+	}
+	if(!isNaN(data.agostoIn2)){
+		dataAgosto[6]= data.agostoIn2Suma/data.agostoIn2
+		labelAgosto[6] = "IN0002"
+	}
+	if(!isNaN(data.agostoIn3)){
+		dataAgosto[7]= data.agostoIn3Suma/data.agostoIn3
+		labelAgosto[7] = "IN0003"
+	}
+	if(!isNaN(data.agostoIn4)){
+		dataAgosto[8]= data.agostoIn4Suma/data.agostoIn4
+		labelAgosto[8] = "IN0004"
+	}
+	
+	const dataSeptiembre=[]
+	const labelSeptiembre=[]
+	if(!isNaN(data.septiembreEac)){
+		dataSeptiembre[0]= data.septiembreEacSuma/data.septiembreEac
+		labelSeptiembre[0] = "EAC"
+	}
+	if(!isNaN(data.septiembreEag)){
+		dataSeptiembre[1]= data.septiembreEagSuma/data.septiembreEag
+		labelSeptiembre[1] = "EAG"
+	}
+	if(!isNaN(data.septiembreEc)){
+		dataSeptiembre[2]= data.septiembreEcSuma/data.septiembreEc
+		labelSeptiembre[2] = "EC"
+	}
+	if(!isNaN(data.septiembreEm)){
+		dataSeptiembre[3]= data.septiembreEmSuma/data.septiembreEm
+		labelSeptiembre[3] = "EM"
+	}
+	if(!isNaN(data.septiembreEma)){
+		dataSeptiembre[4]= data.septiembreEmaSuma/data.septiembreEma
+		labelSeptiembre[4] = "EMA"
+	}
+	if(!isNaN(data.septiembreIn1)){
+		dataSeptiembre[5]= data.septiembreIn1Suma/data.septiembreIn1
+		labelSeptiembre[5] = "IN0001"
+	}
+	if(!isNaN(data.septiembreIn2)){
+		dataSeptiembre[6]= data.septiembreIn2Suma/data.septiembreIn2
+		labelSeptiembre[6] = "IN0002"
+	}
+	if(!isNaN(data.septiembreIn3)){
+		dataSeptiembre[7]= data.septiembreIn3Suma/data.septiembreIn3
+		labelSeptiembre[7] = "IN0003"
+	}
+	if(!isNaN(data.septiembreIn4)){
+		dataSeptiembre[8]= data.septiembreIn4Suma/data.septiembreIn4
+		labelSeptiembre[8] = "IN0004"
+	}
+
+	const dataOctubre=[]
+	const labelOctubre=[]
+	if(!isNaN(data.octubreEac)){
+		dataOctubre[0]= data.octubreEacSuma/data.octubreEac
+		labelOctubre[0] = "EAC"
+	}
+	if(!isNaN(data.octubreEag)){
+		dataOctubre[1]= data.octubreEagSuma/data.octubreEag
+		labelOctubre[1] = "EAG"
+	}
+	if(!isNaN(data.octubreEc)){
+		dataOctubre[2]= data.octubreEcSuma/data.octubreEc
+		labelOctubre[2] = "EC"
+	}
+	if(!isNaN(data.octubreEm)){
+		dataOctubre[3]= data.octubreEmSuma/data.octubreEm
+		labelOctubre[3] = "EM"
+	}
+	if(!isNaN(data.octubreEma)){
+		dataOctubre[4]= data.octubreEmaSuma/data.octubreEma
+		labelOctubre[4] = "EMA"
+	}
+	if(!isNaN(data.octubreIn1)){
+		dataOctubre[5]= data.octubreIn1Suma/data.octubreIn1
+		labelOctubre[5] = "IN0001"
+	}
+	if(!isNaN(data.octubreIn2)){
+		dataOctubre[6]= data.octubreIn2Suma/data.octubreIn2
+		labelOctubre[6] = "IN0002"
+	}
+	if(!isNaN(data.octubreIn3)){
+		dataOctubre[7]= data.octubreIn3Suma/data.octubreIn3
+		labelOctubre[7] = "IN0003"
+	}
+	if(!isNaN(data.octubreIn4)){
+		dataOctubre[8]= data.octubreIn4Suma/data.octubreIn4
+		labelOctubre[8] = "IN0004"
+	}
+
+	const dataNoviembre=[]
+	const labelNoviembre=[]
+	if(!isNaN(data.noviembreEac)){
+		dataNoviembre[0]= data.noviembreEacSuma/data.noviembreEac
+		labelNoviembre[0] = "EAC"
+	}
+	if(!isNaN(data.noviembreEag)){
+		dataNoviembre[1]= data.noviembreEagSuma/data.noviembreEag
+		labelNoviembre[1] = "EAG"
+	}
+	if(!isNaN(data.noviembreEc)){
+		dataNoviembre[2]= data.noviembreEcSuma/data.noviembreEc
+		labelNoviembre[2] = "EC"
+	}
+	if(!isNaN(data.noviembreEm)){
+		dataNoviembre[3]= data.noviembreEmSuma/data.noviembreEm
+		labelNoviembre[3] = "EM"
+	}
+	if(!isNaN(data.noviembreEma)){
+		dataNoviembre[4]= data.noviembreEmaSuma/data.noviembreEma
+		labelNoviembre[4] = "EMA"
+	}
+	if(!isNaN(data.noviembreIn1)){
+		dataNoviembre[5]= data.noviembreIn1Suma/data.noviembreIn1
+		labelNoviembre[5] = "IN0001"
+	}
+	if(!isNaN(data.noviembreIn2)){
+		dataNoviembre[6]= data.noviembreIn2Suma/data.noviembreIn2
+		labelNoviembre[6] = "IN0002"
+	}
+	if(!isNaN(data.noviembreIn3)){
+		dataNoviembre[7]= data.noviembreIn3Suma/data.noviembreIn3
+		labelNoviembre[7] = "IN0003"
+	}
+	if(!isNaN(data.noviembreIn4)){
+		dataNoviembre[8]= data.noviembreIn4Suma/data.noviembreIn4
+		labelNoviembre[8] = "IN0004"
+	}
+	const dataDiciembre=[]
+	const labelDiciembre=[]
+	if(!isNaN(data.diciembreEac)){
+		dataDiciembre[0]= data.diciembreEacSuma/data.diciembreEac
+		labelDiciembre[0] = "EAC"
+	}
+	if(!isNaN(data.diciembreEag)){
+		dataDiciembre[1]= data.diciembreEagSuma/data.diciembreEag
+		labelDiciembre[1] = "EAG"
+	}
+	if(!isNaN(data.diciembreEc)){
+		dataDiciembre[2]= data.diciembreEcSuma/data.diciembreEc
+		labelDiciembre[2] = "EC"
+	}
+	if(!isNaN(data.diciembreEm)){
+		dataDiciembre[3]= data.diciembreEmSuma/data.diciembreEm
+		labelDiciembre[3] = "EM"
+	}
+	if(!isNaN(data.diciembreEma)){
+		dataDiciembre[4]= data.diciembreEmaSuma/data.diciembreEma
+		labelDiciembre[4] = "EMA"
+	}
+	if(!isNaN(data.diciembreIn1)){
+		dataDiciembre[5]= data.diciembreIn1Suma/data.diciembreIn1
+		labelDiciembre[5] = "IN0001"
+	}
+	if(!isNaN(data.diciembreIn2)){
+		dataDiciembre[6]= data.diciembreIn2Suma/data.diciembreIn2
+		labelDiciembre[6] = "IN0002"
+	}
+	if(!isNaN(data.diciembreIn3)){
+		dataDiciembre[7]= data.diciembreIn3Suma/data.diciembreIn3
+		labelDiciembre[7] = "IN0003"
+	}
+	if(!isNaN(data.diciembreIn4)){
+		dataDiciembre[8]= data.diciembreIn4Suma/data.diciembreIn4
+		labelDiciembre[8] = "IN0004"
+	}
+
+	const infoOportunidad={
+		dataEnero,
+		labelEnero,
+		dataFebrero,
+		labelFebrero,
+		dataMarzo,
+		labelMarzo,
+		dataAbril,
+		labelAbril,
+		dataMayo,
+		labelMayo,
+		dataJunio,
+		labelJunio,
+		dataJulio,
+		labelJulio,
+		dataAgosto,
+		labelAgosto,
+		dataSeptiembre,
+		labelSeptiembre,
+		dataOctubre,
+		labelOctubre,
+		dataNoviembre,
+		labelNoviembre,
+		dataDiciembre,
+		labelDiciembre,
+	}
+
+	console.log(infoOportunidad)
 })
- 
- 
