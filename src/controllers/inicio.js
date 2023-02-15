@@ -13,6 +13,7 @@ let openMenu
 
 
 
+
 ipcRenderer.on('userData', async (e, userData)=>{
    usuario.textContent = `Bienvenido ${userData.nombre} ${userData.nombre_1} ${userData.apellido} ${userData.apellido_1}`
    const config = await dataConfActivo()

@@ -5,6 +5,7 @@ const { default: electronReload } = require('electron-reload');
 require('dotenv').config()
 require('electron-reload')(__dirname);
 
+
 const window = new Map()
 process.env['ELECTRON_DISABLE_SECURITY_WARNINGS'] = 'true';
 let login
